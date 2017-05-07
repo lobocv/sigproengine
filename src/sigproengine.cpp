@@ -5,7 +5,8 @@
 #include <boost/python.hpp>
 #include <boost/python/numpy.hpp>
 
-#include "process.h"
+#include "gain.h"
+
 
 namespace bp = boost::python;
 namespace np = boost::python::numpy;
