@@ -7,15 +7,28 @@ namespace np = boost::python::numpy;
 namespace bp = boost::python;
 
 
-class Gain {
+class Process {
+
+    protected:
+        bool initialized = false;
 
     public:
-        const char* name = "Gain";
-        float gain;
+        void setup();
+        virtual const char* getName();
+        virtual bool isInitialized(Process* p);
+
+};
+
+
+class Gain : public Process {
+
+    public:
+        const char* getName();
+        float gain = 1;
         int points_per_trace;
 
         void setup(int points_per_trace, float gain);
-        void apply(np::ndarray  data);
+        void apply(np::ndarray data);
 
 };
 
