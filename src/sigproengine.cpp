@@ -1,55 +1,56 @@
 #include <stdio.h>
 #include <iostream>
 
+
 #include <boost/python.hpp>
 #include <boost/python/numpy.hpp>
 
+#include "process.h"
+
 namespace bp = boost::python;
-namespace bn = boost::python::numpy;
-
-
-class Gain {
-
-
-    public:
-        float gain;
-        int points_per_trace;
-
-        void setup(int points_per_trace, float gain) {
-            this->gain = gain;
-            this->points_per_trace = points_per_trace;
-        }
-
-        void apply(float data[]) {
-            for (int ii=0; ii < this->points_per_trace; ii++) {
-                data[ii] *= this->gain;
-            }
-        }
-
-};
+namespace np = boost::python::numpy;
 
 void func(void) {
 
-    std::cout << "TEST" << std::endl;
+    std::cout << "TEST FUNCTION STARTS\n" << std::endl;
 
     Gain g;
+
     const int N = 5;
+    bp::tuple shape = bp::make_tuple(N);
+    np::dtype dtype = np::dtype::get_builtin<float>();
+    np::ndarray data = np::zeros(shape, dtype);
 
-    float data[N] = {1, 2, 3, 4, 5};
-
-    g.setup(N, 2.0);
-    g.apply(data);
 
     for (int ii=0; ii<N; ii++) {
-        std::cout << data[ii] << std::endl;
+        data[ii] = ii;
     }
 
+    g.setup(N, 10.0);
+    g.apply(data);
+
+    std::cout << bp::extract<char const *>(bp::str(data)) << std::endl;
+
+
+
+    std::cout << "\nTEST FUNCTION ENDS" << std::endl;
 };
+
 
 
 BOOST_PYTHON_MODULE(sigproengine) {
 
-    bn::initialize();
+    using namespace boost::python;
 
-    bp::def("func", func);
+    Py_Initialize();
+    np::initialize();
+
+
+
+    class_<Gain>("Gain", init<>())
+        .def("setup", &Gain::setup)
+        .def("apply", &Gain::apply)
+        ;
+
+    def("func", func);
 }

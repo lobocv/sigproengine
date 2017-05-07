@@ -12,16 +12,18 @@ TARGET = sigproengine
 SRC_DIR = src
 OUTPUT_DIR = bin
 
-all: $(OUTPUT_DIR)/$(TARGET).o $(OUTPUT_DIR)/$(TARGET).so 
+all: $(OUTPUT_DIR)/process.o $(OUTPUT_DIR)/$(TARGET).o $(OUTPUT_DIR)/$(TARGET).so
 
 
 $(OUTPUT_DIR)/$(TARGET).so: $(OUTPUT_DIR)/$(TARGET).o
-	$(CC) -shared -I$(BOOST_LIB) -L$(BOOST_LIB) -o $(OUTPUT_DIR)/$(TARGET).so $(OUTPUT_DIR)/$(TARGET).o -lpython2.7 -lboost_python  -lboost_numpy
-
+	$(CC) -shared -I$(BOOST_LIB) -L$(BOOST_LIB) -o $(OUTPUT_DIR)/$(TARGET).so $(OUTPUT_DIR)/process.o 		$(OUTPUT_DIR)/$(TARGET).o  -lpython2.7 -lboost_python -lboost_numpy
 
 
 $(OUTPUT_DIR)/$(TARGET).o:
-	$(CC) -o $(OUTPUT_DIR)/$(TARGET).o -c $(SRC_DIR)/$(TARGET).cpp -Wall -fPIC -I$(PYTHON_INCLUDE) -I$(BOOST_INC)
+	$(CC) -std=c++11 -o $(OUTPUT_DIR)/$(TARGET).o -c $(SRC_DIR)/$(TARGET).cpp -Wall -fPIC -I$(PYTHON_INCLUDE) -I$(BOOST_INC)
+
+$(OUTPUT_DIR)/process.o:
+	$(CC) -std=c++11 -o $(OUTPUT_DIR)/process.o -c $(SRC_DIR)/process.cpp -Wall -fPIC -I$(PYTHON_INCLUDE) -I$(BOOST_INC)
 
 
 clean:
