@@ -12,7 +12,7 @@ namespace bp = boost::python;
 class Gain : public Process {
 
     public:
-        const char* getName();
+        virtual const char* getName();
         float gain = 1;
         int points_per_trace;
 

@@ -6,6 +6,7 @@
 #include <boost/python/numpy.hpp>
 
 #include "gain.h"
+#include "processingchain.h"
 
 
 namespace bp = boost::python;
@@ -15,7 +16,14 @@ void func(void) {
 
     std::cout << "TEST FUNCTION STARTS\n" << std::endl;
 
+    ProcessingChain pc;
     Gain g;
+
+    pc.add_process(&g);
+
+    for (int ii=0; ii<1; ii++) {
+        std::cout << "Process #" << (ii+1) << ": "<< pc.processes[ii]->getName() << std::endl;
+    }
 
     const int N = 5;
     bp::tuple shape = bp::make_tuple(N);

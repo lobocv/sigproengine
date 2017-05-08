@@ -12,11 +12,11 @@ TARGET = sigproengine
 SRC_DIR = src
 OUTPUT_DIR = bin
 
-all: $(OUTPUT_DIR)/process.o $(OUTPUT_DIR)/gain.o $(OUTPUT_DIR)/$(TARGET).o $(OUTPUT_DIR)/$(TARGET).so
+all: $(OUTPUT_DIR)/processingchain.o $(OUTPUT_DIR)/process.o $(OUTPUT_DIR)/gain.o $(OUTPUT_DIR)/$(TARGET).o $(OUTPUT_DIR)/$(TARGET).so
 
 
 $(OUTPUT_DIR)/$(TARGET).so: $(OUTPUT_DIR)/$(TARGET).o
-	$(CC) -shared -I$(BOOST_LIB) -L$(BOOST_LIB) -o $(OUTPUT_DIR)/$(TARGET).so $(OUTPUT_DIR)/process.o $(OUTPUT_DIR)/gain.o $(OUTPUT_DIR)/$(TARGET).o  -lpython2.7 -lboost_python -lboost_numpy
+	$(CC) -shared -I$(BOOST_LIB) -L$(BOOST_LIB) -o $(OUTPUT_DIR)/$(TARGET).so $(OUTPUT_DIR)/process.o $(OUTPUT_DIR)/gain.o $(OUTPUT_DIR)/processingchain.o $(OUTPUT_DIR)/$(TARGET).o  -lpython2.7 -lboost_python -lboost_numpy
 
 
 $(OUTPUT_DIR)/$(TARGET).o:
@@ -28,10 +28,13 @@ $(OUTPUT_DIR)/process.o:
 $(OUTPUT_DIR)/gain.o:
 	$(CC) -std=c++11 -o $(OUTPUT_DIR)/gain.o -c $(SRC_DIR)/gain.cpp -Wall -fPIC -I$(PYTHON_INCLUDE) -I$(BOOST_INC)
 
+$(OUTPUT_DIR)/processingchain.o:
+	$(CC) -std=c++11 -o $(OUTPUT_DIR)/processingchain.o -c $(SRC_DIR)/processingchain.cpp -Wall -fPIC -I$(PYTHON_INCLUDE) -I$(BOOST_INC)
+
 clean:
 	rm -r $(OUTPUT_DIR)/* 
 	touch $(OUTPUT_DIR)/__init__.py
 
 test:
-	make clean && make all && python callfrompy.py 
+	make clean && make all && python callfrompy.py
 
