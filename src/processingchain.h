@@ -11,10 +11,10 @@ namespace bp = boost::python;
 class ProcessingChain {
 
     public:
-        std::vector<Process*> processes;
+        std::vector<std::reference_wrapper<Process>> processes;
 
         void add_process(Process* p);
-
+        void apply(np::ndarray data);
 
 };
 

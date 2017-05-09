@@ -16,6 +16,7 @@ class Process {
         void setup();
         virtual const char* getName();
         virtual bool isInitialized(Process* p);
+        virtual void apply(np::ndarray data);
 
 };
 

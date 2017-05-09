@@ -29,3 +29,4 @@ bool Process::isInitialized(Process* p) {
     }
 }
 
+void Process::apply(np::ndarray data) {}

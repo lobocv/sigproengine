@@ -13,19 +13,19 @@ namespace bp = boost::python;
 namespace np = boost::python::numpy;
 
 void func(void) {
+    const int N = 5;
 
     std::cout << "TEST FUNCTION STARTS\n" << std::endl;
 
-    ProcessingChain pc;
-    Gain g;
 
+    Gain g;
+    Gain G;
+    g.setup(N, 10.0);
+
+    ProcessingChain pc;
     pc.add_process(&g);
 
-    for (int ii=0; ii<1; ii++) {
-        std::cout << "Process #" << (ii+1) << ": "<< pc.processes[ii]->getName() << std::endl;
-    }
 
-    const int N = 5;
     bp::tuple shape = bp::make_tuple(N);
     np::dtype dtype = np::dtype::get_builtin<float>();
     np::ndarray data = np::zeros(shape, dtype);
@@ -35,8 +35,8 @@ void func(void) {
         data[ii] = ii;
     }
 
-    g.setup(N, 10.0);
-    g.apply(data);
+
+    pc.apply(data);
 
     std::cout << bp::extract<char const *>(bp::str(data)) << std::endl;
 
@@ -56,9 +56,18 @@ BOOST_PYTHON_MODULE(sigproengine) {
 
 
 
-    class_<Gain>("Gain", init<>())
+    class_<Process>("Process", init<>())
+        ;
+
+    class_<Gain, bases<Process> >("Gain", init<>())
         .def("setup", &Gain::setup)
         .def("apply", &Gain::apply)
+        ;
+
+
+    class_<ProcessingChain>("ProcessingChain", init<>())
+        .def("add_process", &ProcessingChain::add_process)
+        .def("apply", &ProcessingChain::apply)
         ;
 
     def("func", func);
