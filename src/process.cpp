@@ -3,6 +3,7 @@
 
 #include <boost/python.hpp>
 #include <boost/python/numpy.hpp>
+#include <boost/property_tree/ptree.hpp>
 
 #include "process.h"
 
@@ -32,7 +33,8 @@ bool Process::isInitialized(Process* p) {
 void Process::apply(np::ndarray data) {}
 
 
-std::string Process::json_serialize() {
-    std::string s;
-    return s;
+
+boost::property_tree::ptree Process::json_serialize() {
+    boost::property_tree::ptree tree;
+    return tree;
     };

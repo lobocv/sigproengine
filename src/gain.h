@@ -2,6 +2,7 @@
 #define GAIN_INCLUDED
 
 #include <boost/python/numpy.hpp>
+#include <boost/property_tree/ptree.hpp>
 
 #include "process.h"
 
@@ -18,7 +19,7 @@ class Gain : public Process {
 
         void setup(int points_per_trace, float gain);
         void apply(np::ndarray data);
-        std::string json_serialize();
+        boost::property_tree::ptree json_serialize();
 
 };
 

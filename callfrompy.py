@@ -8,12 +8,13 @@ t = np.ones(N, dtype=np.float)
 
 chain = spe.ProcessingChain()
 gain = spe.Gain()
-gain.setup(N, 10)
+gain.setup(N, 5)
+chain.add_process(gain)
 
-js = gain.json_serialize()
+js = chain.json_serialize()
 print ("JSON: %s" % js)
 
-chain.add_process(gain)
+
 
 print(t)
 chain.apply(t)

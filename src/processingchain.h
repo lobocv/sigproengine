@@ -16,7 +16,7 @@ class ProcessingChain {
 
         void add_process(Process* p);
         void apply(np::ndarray data);
-        void save();
+        std::string json_serialize();
 };
 
 
