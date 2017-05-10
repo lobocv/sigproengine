@@ -18,6 +18,7 @@ class Gain : public Process {
 
         void setup(int points_per_trace, float gain);
         void apply(np::ndarray data);
+        std::string json_serialize();
 
 };
 

@@ -62,6 +62,7 @@ BOOST_PYTHON_MODULE(sigproengine) {
     class_<Gain, bases<Process> >("Gain", init<>())
         .def("setup", &Gain::setup)
         .def("apply", &Gain::apply)
+        .def("json_serialize", &Gain::json_serialize)
         ;
 
 

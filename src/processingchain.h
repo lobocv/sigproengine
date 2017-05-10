@@ -2,6 +2,7 @@
 #define PROCESSINGCHAIN_INCLUDED
 
 #include <boost/python/numpy.hpp>
+
 #include "process.h"
 
 namespace np = boost::python::numpy;
@@ -15,7 +16,7 @@ class ProcessingChain {
 
         void add_process(Process* p);
         void apply(np::ndarray data);
-
+        void save();
 };
 
 

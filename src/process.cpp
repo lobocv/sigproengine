@@ -30,3 +30,9 @@ bool Process::isInitialized(Process* p) {
 }
 
 void Process::apply(np::ndarray data) {}
+
+
+std::string Process::json_serialize() {
+    std::string s;
+    return s;
+    };

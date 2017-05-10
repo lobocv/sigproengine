@@ -17,6 +17,8 @@ class Process {
         virtual const char* getName();
         virtual bool isInitialized(Process* p);
         virtual void apply(np::ndarray data);
+        virtual std::string json_serialize();
+
 
 };
 
