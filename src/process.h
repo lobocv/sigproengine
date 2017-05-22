@@ -18,7 +18,8 @@ class Process {
         virtual const char* getName();
         virtual bool isInitialized(Process* p);
         virtual void apply(np::ndarray data);
-        virtual boost::property_tree::ptree json_serialize();
+        virtual boost::property_tree::ptree json_save();
+        virtual void json_load(boost::property_tree::ptree params);
 
 
 };

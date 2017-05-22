@@ -34,7 +34,10 @@ void Process::apply(np::ndarray data) {}
 
 
 
-boost::property_tree::ptree Process::json_serialize() {
+boost::property_tree::ptree Process::json_save() {
     boost::property_tree::ptree tree;
     return tree;
+    };
+
+void Process::json_load(boost::property_tree::ptree params) {
     };

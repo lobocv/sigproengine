@@ -39,7 +39,7 @@ void Gain::apply(np::ndarray  data) {
 
 
 
-boost::property_tree::ptree Gain::json_serialize() {
+boost::property_tree::ptree Gain::json_save() {
     boost::property_tree::ptree root, params;
     std::stringstream s;
     std::string json_str;
@@ -53,5 +53,9 @@ boost::property_tree::ptree Gain::json_serialize() {
 
     return root;
 
-
 }
+
+void Gain::json_load(boost::property_tree::ptree params) {
+    std::cout << "Loading Gain" << std::endl;
+    this->setup(params.get<int>("points_per_trace"), params.get<float>("gain"));
+    }
