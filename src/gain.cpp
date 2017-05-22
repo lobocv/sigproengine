@@ -18,10 +18,10 @@ const char* Gain::getName() {
 }
 
 
-void Gain::setup(int points_per_trace, float gain) {
+void Gain::setup(int points_per_trace, float gain, bool enabled) {
     this->gain = gain;
     this->points_per_trace = points_per_trace;
-    Process::setup();
+    Process::setup(enabled);
 }
 
 
@@ -49,13 +49,14 @@ boost::property_tree::ptree Gain::json_save() {
     root.add_child("Gain", params);
     boost::property_tree::write_json(s, root);
 
-    json_str = s.str();
-
     return root;
 
 }
 
 void Gain::json_load(boost::property_tree::ptree params) {
     std::cout << "Loading Gain" << std::endl;
-    this->setup(params.get<int>("points_per_trace"), params.get<float>("gain"));
+    this->setup(params.get<int>("points_per_trace"),
+                params.get<float>("gain"));
+    Process::json_load(params);
+
     }

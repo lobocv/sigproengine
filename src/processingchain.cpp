@@ -18,12 +18,17 @@ void ProcessingChain::add_process(Process* p) {
 }
 
 void ProcessingChain::apply(np::ndarray data) {
+    Process* p;
     std::vector<std::reference_wrapper<Process>> processes = this->processes;
 
     std::cout << "Calling Processing Chain Apply" << std::endl;
 
     for (unsigned int ii=0; ii < processes.size(); ii++) {
-        processes[ii].get().apply(data);
+        p = &processes[ii].get();
+        std::cout << "Enabled " << p->enabled << std::endl;
+        if (p->enabled) {
+            p->apply(data);
+        }
     }
 
     std::cout << "Done Calling Processing Chain Apply" << std::endl;

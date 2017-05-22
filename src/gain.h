@@ -17,7 +17,7 @@ class Gain : public Process {
         float gain = 1;
         int points_per_trace;
 
-        void setup(int points_per_trace, float gain);
+        void setup(int points_per_trace, float gain, bool enabled=true);
         void apply(np::ndarray data);
         boost::property_tree::ptree json_save();
         void json_load(boost::property_tree::ptree params);

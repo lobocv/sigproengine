@@ -25,13 +25,14 @@ print('LOADING JSON\n\n')
 # chain.json_load(js)
 chain.json_load(JSON.dumps(
             {
-             'processes': [{'Gain': {'points_per_trace': N, 'gain': GAIN}},
+             'processes': [{'Gain': {'points_per_trace': N, 'gain': GAIN,
+                                     'enabled': 0
+                                     }},
                            # {'Dewow': {'ppt': 5, 'freq': 100}},
                           ],
 
              }
 ))
-
 
 chain.apply(t)
 print(t)

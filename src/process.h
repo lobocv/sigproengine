@@ -14,7 +14,9 @@ class Process {
         bool initialized = false;
 
     public:
-        void setup();
+        bool enabled = true;
+
+        void setup(bool enabled=true);
         virtual const char* getName();
         virtual bool isInitialized(Process* p);
         virtual void apply(np::ndarray data);

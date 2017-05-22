@@ -15,8 +15,9 @@ const char* Process::getName() {
 }
 
 
-void Process::setup() {
+void Process::setup(bool enabled) {
     this->initialized = true;
+    this->enabled = enabled;
 }
 
 bool Process::isInitialized(Process* p) {
@@ -40,4 +41,5 @@ boost::property_tree::ptree Process::json_save() {
     };
 
 void Process::json_load(boost::property_tree::ptree params) {
+    this->setup(params.get<bool>("enabled", true));
     };
