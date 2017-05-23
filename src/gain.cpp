@@ -41,13 +41,11 @@ void Gain::apply(np::ndarray  data) {
 
 boost::property_tree::ptree Gain::json_save() {
     boost::property_tree::ptree root, params;
-    std::stringstream s;
-    std::string json_str;
 
     params.put("points_per_trace", this->points_per_trace);
     params.put("gain", this->gain);
+    params.put("enabled", this->enabled);
     root.add_child("Gain", params);
-    boost::property_tree::write_json(s, root);
 
     return root;
 
