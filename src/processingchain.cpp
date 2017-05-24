@@ -17,14 +17,18 @@ void ProcessingChain::add_process(Process* p) {
     this->processes.push_back(std::ref(*p));
 }
 
+void ProcessingChain::clear() {
+    std::cout << "Clearing processing chain" << std::endl;
+    this->processes.clear();        // Is this a memory leak?
+}
+
+
 void ProcessingChain::apply(np::ndarray data) {
     Process* p;
-    std::vector<std::reference_wrapper<Process>> processes = this->processes;
-
     std::cout << "Calling Processing Chain Apply" << std::endl;
 
-    for (unsigned int ii=0; ii < processes.size(); ii++) {
-        p = &processes[ii].get();
+    for (unsigned int ii=0; ii < this->processes.size(); ii++) {
+        p = &(this->processes[ii].get());
         std::cout << "Enabled " << p->enabled << std::endl;
         if (p->enabled) {
             p->apply(data);
@@ -62,6 +66,9 @@ void ProcessingChain::json_load(std::string json) {
     std::string process_name;
     boost::property_tree::ptree root, process, parameters;
     Process* p;
+
+    // Clear the current processes in the chain
+    this->clear();
 
     // dump the string into a stream and we can read it into a property tree
     ss << json;

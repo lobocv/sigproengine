@@ -28,6 +28,7 @@ class ProcessingChain {
         std::vector<std::reference_wrapper<Process>> processes;
 
         void add_process(Process* p);
+        void clear();
         void apply(np::ndarray data);
         std::string json_save();
         void json_load(std::string);
