@@ -34,7 +34,9 @@ bool Process::isInitialized(Process* p) {
 void Process::apply(np::ndarray inData, np::ndarray outData) {
 }
 
-
+void Process::apply(np::ndarray inData) {
+    return Process::apply(inData, inData);
+}
 
 boost::property_tree::ptree Process::json_save() {
     boost::property_tree::ptree tree;

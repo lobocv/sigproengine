@@ -36,6 +36,7 @@ chain.json_load(JSON.dumps(
 ))
 
 chain.apply(inData, outData)
+chain.apply(inData)
 print(inData)
 print(outData)
 #

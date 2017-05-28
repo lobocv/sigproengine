@@ -23,6 +23,11 @@ void ProcessingChain::clear() {
 }
 
 
+void ProcessingChain::apply(np::ndarray inData) {
+    ProcessingChain::apply(inData, inData);
+}
+
+
 void ProcessingChain::apply(np::ndarray inData, np::ndarray outData) {
     Process* p;
     std::cout << "Calling Processing Chain Apply" << std::endl;

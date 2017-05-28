@@ -20,6 +20,7 @@ class Process {
         virtual const char* getName();
         virtual bool isInitialized(Process* p);
         virtual void apply(np::ndarray inData, np::ndarray outData);
+        virtual void apply(np::ndarray inData);
         virtual boost::property_tree::ptree json_save();
         virtual void json_load(boost::property_tree::ptree params);
 

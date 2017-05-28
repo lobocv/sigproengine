@@ -29,6 +29,7 @@ class ProcessingChain {
 
         void add_process(Process* p);
         void clear();
+        void apply(np::ndarray inData);
         void apply(np::ndarray inData, np::ndarray outData);
         std::string json_save();
         void json_load(std::string);

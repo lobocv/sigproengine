@@ -25,6 +25,10 @@ void Gain::setup(int points_per_trace, float gain, bool enabled) {
 }
 
 
+void Gain::apply(np::ndarray inData) {
+    return Gain::apply(inData, inData);
+}
+
 void Gain::apply(np::ndarray inData, np::ndarray outData) {
     float g = this->gain;
 
