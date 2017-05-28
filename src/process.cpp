@@ -31,7 +31,8 @@ bool Process::isInitialized(Process* p) {
     }
 }
 
-void Process::apply(np::ndarray data) {}
+void Process::apply(np::ndarray inData, np::ndarray outData) {
+}
 
 
 

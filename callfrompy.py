@@ -7,8 +7,9 @@ import json as JSON
 N=10
 GAIN = 5
 
-t = np.ones(N, dtype=np.float)
-print(t)
+inData = np.ones(N, dtype=np.float)
+outData = inData.copy()
+print(inData)
 
 chain = spe.ProcessingChain()
 # gain = spe.Gain()
@@ -26,7 +27,7 @@ print('LOADING JSON\n\n')
 chain.json_load(JSON.dumps(
             {
              'processes': [{'Gain': {'points_per_trace': N, 'gain': GAIN,
-                                     'enabled': 0
+                                     'enabled': 1
                                      }},
                            # {'Dewow': {'ppt': 5, 'freq': 100}},
                           ],
@@ -34,6 +35,7 @@ chain.json_load(JSON.dumps(
              }
 ))
 
-chain.apply(t)
-print(t)
+chain.apply(inData, outData)
+print(inData)
+print(outData)
 #

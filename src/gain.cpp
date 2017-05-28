@@ -25,7 +25,7 @@ void Gain::setup(int points_per_trace, float gain, bool enabled) {
 }
 
 
-void Gain::apply(np::ndarray  data) {
+void Gain::apply(np::ndarray inData, np::ndarray outData) {
     float g = this->gain;
 
     if (! Process::isInitialized(this)) {
@@ -33,7 +33,7 @@ void Gain::apply(np::ndarray  data) {
     }
 
     for (int ii=0; ii < this->points_per_trace; ii++) {
-        data[ii] *= g;
+        outData[ii] = g * inData[ii];
     }
 }
 

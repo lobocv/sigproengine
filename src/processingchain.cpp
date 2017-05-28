@@ -23,7 +23,7 @@ void ProcessingChain::clear() {
 }
 
 
-void ProcessingChain::apply(np::ndarray data) {
+void ProcessingChain::apply(np::ndarray inData, np::ndarray outData) {
     Process* p;
     std::cout << "Calling Processing Chain Apply" << std::endl;
 
@@ -31,7 +31,7 @@ void ProcessingChain::apply(np::ndarray data) {
         p = &(this->processes[ii].get());
         std::cout << "Enabled " << p->enabled << std::endl;
         if (p->enabled) {
-            p->apply(data);
+            p->apply(inData, outData);
         }
     }
 

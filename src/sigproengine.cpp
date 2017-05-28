@@ -39,7 +39,7 @@ void func(void) {
     }
 
 
-    pc.apply(data);
+    pc.apply(data, data);
 
     std::cout << bp::extract<char const *>(bp::str(data)) << std::endl;
 
