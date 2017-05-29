@@ -12,6 +12,7 @@
 
 
 namespace np = boost::python::numpy;
+namespace bp = boost::python;
 
 const char* Gain::getName() {
     return "Gain";
@@ -38,22 +39,23 @@ void Gain::apply(np::ndarray inData, np::ndarray outData) {
 
 
 
-boost::property_tree::ptree Gain::json_save() {
-    boost::property_tree::ptree root, params;
+bp::dict Gain::json_save() {
+    bp::dict root, params;
 
-    params.put("points_per_trace", this->points_per_trace);
-    params.put("gain", this->gain);
-    params.put("enabled", this->enabled);
-    root.add_child("Gain", params);
+    params["points_per_trace"] = this->points_per_trace;
+    params["gain"] = this->gain;
+    params["enabled"] = this->enabled;
+    root["Gain"] = params;
 
     return root;
 
 }
 
-void Gain::json_load(boost::property_tree::ptree params) {
+void Gain::json_load(bp::dict params) {
     std::cout << "Loading Gain" << std::endl;
-    this->setup(params.get<int>("points_per_trace"),
-                params.get<float>("gain"));
+    this->setup(bp::extract<int>(params["points_per_trace"]),
+                bp::extract<float>(params["gain"])
+                );
     Process::json_load(params);
 
     }

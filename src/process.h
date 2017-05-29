@@ -21,8 +21,8 @@ class Process {
         virtual bool isInitialized(Process* p);
         virtual void apply(np::ndarray inData, np::ndarray outData);
         virtual void apply(np::ndarray inData);
-        virtual boost::property_tree::ptree json_save();
-        virtual void json_load(boost::property_tree::ptree params);
+        virtual bp::dict json_save();
+        virtual void json_load(bp::dict params);
 
 
 };

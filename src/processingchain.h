@@ -22,17 +22,16 @@ template<typename T> Process* createInstance() {
 
 
 
-class ProcessingChain {
+class ProcessingChain : public Process {
 
     public:
         std::vector<std::reference_wrapper<Process>> processes;
 
         void add_process(Process* p);
         void clear();
-        void apply(np::ndarray inData);
         void apply(np::ndarray inData, np::ndarray outData);
-        std::string json_save();
-        void json_load(std::string);
+        bp::dict json_save();
+        void json_load(bp::dict params);
 
     private:
 

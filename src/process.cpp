@@ -9,6 +9,7 @@
 
 
 namespace np = boost::python::numpy;
+namespace bp = boost::python;
 
 const char* Process::getName() {
     return "Un-named Process";
@@ -40,11 +41,11 @@ void Process::apply(np::ndarray inData) {
     return Process::apply(inData, inData);
 }
 
-boost::property_tree::ptree Process::json_save() {
-    boost::property_tree::ptree tree;
+bp::dict Process::json_save() {
+    bp::dict tree;
     return tree;
-    };
+    }
 
-void Process::json_load(boost::property_tree::ptree params) {
-    this->setup(params.get<bool>("enabled", true));
-    };
+void Process::json_load(bp::dict params) {
+    this->setup(bp::extract<bool>(params.get("enabled", true)));
+    }

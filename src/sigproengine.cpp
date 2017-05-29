@@ -57,11 +57,16 @@ BOOST_PYTHON_MODULE(sigproengine) {
     Py_Initialize();
     np::initialize();
 
+    // Pointer to in-place apply function in the base class
+    void (Process::*ptr_apply)(np::ndarray) = &Process::apply;
+
+    class_<Process>("Process", init<>());
+
+
     // To expose overloaded functions, we must create pointers to each overloaded function and pass them to .def()
     void (ProcessingChain::*ptr_apply_to)(np::ndarray, np::ndarray) = &ProcessingChain::apply;
-    void (ProcessingChain::*ptr_apply)(np::ndarray) = &ProcessingChain::apply;
 
-    class_<ProcessingChain>("ProcessingChain", init<>())
+    class_<ProcessingChain, bases<Process>>("ProcessingChain", init<>())
         .def("add_process", &ProcessingChain::add_process)
         .def("json_save", &ProcessingChain::json_save)
         .def("json_load", &ProcessingChain::json_load)
@@ -71,18 +76,12 @@ BOOST_PYTHON_MODULE(sigproengine) {
         ;
 
 
-    // Pointer to in-place apply function in the base class
-    void (Process::*ptr_gain_apply)(np::ndarray) = &Process::apply;
-
-    class_<Process>("Process", init<>());
-
-
     void (Gain::*ptr_gain_apply_to)(np::ndarray, np::ndarray) = &Gain::apply;
 
     class_<Gain, bases<Process> >("Gain", init<>())
         .def("setup", &Gain::setup)
         .def("apply", ptr_gain_apply_to)
-        .def("apply", ptr_gain_apply)
+        .def("apply", ptr_apply)
         .def("json_save", &Gain::json_save)
         .def_readwrite("enabled", &Gain::enabled)
         ;

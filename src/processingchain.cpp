@@ -12,6 +12,7 @@
 
 
 namespace np = boost::python::numpy;
+namespace bp = boost::python;
 
 void ProcessingChain::add_process(Process* p) {
     this->processes.push_back(std::ref(*p));
@@ -23,18 +24,13 @@ void ProcessingChain::clear() {
 }
 
 
-void ProcessingChain::apply(np::ndarray inData) {
-    ProcessingChain::apply(inData, inData);
-}
-
-
 void ProcessingChain::apply(np::ndarray inData, np::ndarray outData) {
     Process* p;
     std::cout << "Calling Processing Chain Apply" << std::endl;
 
     for (unsigned int ii=0; ii < this->processes.size(); ii++) {
         p = &(this->processes[ii].get());
-        std::cout << "Enabled " << p->enabled << std::endl;
+//        std::cout << "Enabled " << p->enabled << std::endl;
         if (p->enabled) {
             p->apply(inData, outData);
         }
@@ -44,59 +40,44 @@ void ProcessingChain::apply(np::ndarray inData, np::ndarray outData) {
 
 }
 
-std::string ProcessingChain::json_save() {
-    boost::property_tree::ptree chain, process, prolist;
+bp::dict ProcessingChain::json_save() {
+    bp::dict chain, process;
+    bp::list prolist;
     std::vector<std::reference_wrapper<Process>> processes = this->processes;
-    std::string json;
-    std::stringstream sstream;
 
     std::cout << "Calling Processing Chain JSON Serialize" << std::endl;
 
     for (unsigned int ii=0; ii < processes.size(); ii++) {
         process = processes[ii].get().json_save();
-        prolist.push_back(std::make_pair("", process));
+        prolist.append(process);
     }
-    chain.add_child("processes", prolist);
-
-    boost::property_tree::write_json(sstream, chain);
-    json = sstream.str();
+    chain["processes"] = prolist;
 
     std::cout << "Done Calling Processing Chain JSON Serialize" << std::endl;
-    return json;
+    return chain;
 
 }
 
-void ProcessingChain::json_load(std::string json) {
+void ProcessingChain::json_load(bp::dict json) {
     std::stringstream ss, sstream;
     std::string process_name;
     boost::property_tree::ptree root, process, parameters;
     Process* p;
 
-    // Clear the current processes in the chain
-    this->clear();
+    bp::list prolist;
+    bp::dict prodict, proparams;
 
-    // dump the string into a stream and we can read it into a property tree
-    ss << json;
-    boost::property_tree::read_json(ss, root);
+    prolist = bp::extract<bp::list>(json["processes"]);
 
-    // Iterate through each process in the "processes" list
-    BOOST_FOREACH(boost::property_tree::ptree::value_type &v, root.get_child("processes.")) {
-          process = v.second;
-
-         // Read in the process as a ptree
-          BOOST_FOREACH(boost::property_tree::ptree::value_type &v2, process){
-              process_name = v2.first;
-              parameters = v2.second;
-
-              std::cout << "Creating process " << process_name << std::endl;
-              p = this->process_map[process_name]();
-              std::cout << "Initializing process " << process_name << std::endl;
-              p->json_load(parameters);
-              std::cout << "Adding process to chain" << std::endl;
-              this->add_process(p);
-
-          }
-
-
+    for (int ii=0; ii < len(prolist); ii++) {
+          prodict = bp::extract<bp::dict>(prolist[ii]);
+          process_name = bp::extract<std::string>(prodict.keys()[0]);
+          proparams = bp::extract<bp::dict>(prodict.values()[0]);
+          std::cout << "Creating process " << process_name << std::endl;
+          p = this->process_map[process_name]();
+          std::cout << "Initializing process " << process_name << std::endl;
+          p->json_load(proparams);
+          std::cout << "Adding process to chain" << std::endl;
+          this->add_process(p);
     }
 }
