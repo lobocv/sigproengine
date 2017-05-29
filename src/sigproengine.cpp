@@ -67,14 +67,17 @@ BOOST_PYTHON_MODULE(sigproengine) {
         .def("json_load", &ProcessingChain::json_load)
         .def("apply", ptr_apply_to)
         .def("apply", ptr_apply)
+        .def("clear", &ProcessingChain::clear)
         ;
 
+
+    // Pointer to in-place apply function in the base class
+    void (Process::*ptr_gain_apply)(np::ndarray) = &Process::apply;
 
     class_<Process>("Process", init<>());
 
 
     void (Gain::*ptr_gain_apply_to)(np::ndarray, np::ndarray) = &Gain::apply;
-    void (Gain::*ptr_gain_apply)(np::ndarray) = &Gain::apply;
 
     class_<Gain, bases<Process> >("Gain", init<>())
         .def("setup", &Gain::setup)

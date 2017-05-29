@@ -32,9 +32,11 @@ bool Process::isInitialized(Process* p) {
 }
 
 void Process::apply(np::ndarray inData, np::ndarray outData) {
+    this->apply(inData, outData);
 }
 
 void Process::apply(np::ndarray inData) {
+    // Overridden method that uses the same array for in and out data
     return Process::apply(inData, inData);
 }
 
