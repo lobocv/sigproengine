@@ -22,14 +22,7 @@ void Process::setup(bool enabled) {
 }
 
 bool Process::isInitialized(Process* p) {
-    if (! this->initialized) {
-        std::cout << p->getName() << " is not initialized" << std::endl;
-        return false;
-        }
-    else {
-        std::cout << "Applying " << this->getName() << std::endl;
-        return true;
-    }
+    return this->initialized;
 }
 
 void Process::apply(np::ndarray inData, np::ndarray outData) {
