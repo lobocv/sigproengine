@@ -13,12 +13,12 @@ namespace bp = boost::python;
 class Gain : public Process {
 
     public:
-        virtual const char* getName();
+        const char* getName();
         float gain = 1;
         int points_per_trace;
 
         void setup(int points_per_trace, float gain, bool enabled=true);
-        virtual void apply(np::ndarray inData, np::ndarray outData);
+        void apply(np::ndarray inData, np::ndarray outData);
         bp::dict json_save();
         void json_load(bp::dict params);
 
