@@ -1,0 +1,189 @@
+Index: src/process.h
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- src/process.h	(revision )
++++ src/process.h	(revision )
+@@ -0,0 +1,22 @@
++#ifndef PROCESS_INCLUDED
++#define PROCESS_INCLUDED
++
++#include <boost/python/numpy.hpp>
++
++namespace np = boost::python::numpy;
++namespace bp = boost::python;
++
++
++class Gain {
++
++    public:
++        const char* name;
++        float gain;
++        int points_per_trace;
++
++        void setup(int points_per_trace, float gain);
++        void apply(np::ndarray  data);
++
++};
++
++#endif // PROCESS_INCLUDED
+\ No newline at end of file
+Index: src/process.cpp
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- src/process.cpp	(revision )
++++ src/process.cpp	(revision )
+@@ -0,0 +1,27 @@
++#include <stdio.h>
++#include <iostream>
++
++#include <boost/python.hpp>
++#include <boost/python/numpy.hpp>
++
++#include "process.h"
++
++
++namespace np = boost::python::numpy;
++
++
++void Gain::setup(int points_per_trace, float gain) {
++    this->gain = gain;
++    this->points_per_trace = points_per_trace;
++}
++
++void Gain::apply(np::ndarray  data) {
++    float g = this->gain;
++    std::cout << "Applying " << this->name << std::endl;
++    for (int ii=0; ii < this->points_per_trace; ii++) {
++        data[ii] *= g;
++    }
++}
++
++
++
+Index: Makefile
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- Makefile	(date 1494165111000)
++++ Makefile	(revision )
+@@ -12,16 +12,18 @@
+ SRC_DIR = src
+ OUTPUT_DIR = bin
+ 
+-all: $(OUTPUT_DIR)/$(TARGET).o $(OUTPUT_DIR)/$(TARGET).so 
++all: $(OUTPUT_DIR)/process.o $(OUTPUT_DIR)/$(TARGET).o $(OUTPUT_DIR)/$(TARGET).so
+ 
+ 
+ $(OUTPUT_DIR)/$(TARGET).so: $(OUTPUT_DIR)/$(TARGET).o
+-	$(CC) -shared -I$(BOOST_LIB) -L$(BOOST_LIB) -o $(OUTPUT_DIR)/$(TARGET).so $(OUTPUT_DIR)/$(TARGET).o -lpython2.7 -lboost_python  -lboost_numpy
++	$(CC) -shared -I$(BOOST_LIB) -L$(BOOST_LIB) -o $(OUTPUT_DIR)/$(TARGET).so $(OUTPUT_DIR)/process.o 		$(OUTPUT_DIR)/$(TARGET).o  -lpython2.7 -lboost_python -lboost_numpy
+ 
+ 
+-
+ $(OUTPUT_DIR)/$(TARGET).o:
+-	$(CC) -o $(OUTPUT_DIR)/$(TARGET).o -c $(SRC_DIR)/$(TARGET).cpp -Wall -fPIC -I$(PYTHON_INCLUDE) -I$(BOOST_INC)
++	$(CC) -std=c++11 -o $(OUTPUT_DIR)/$(TARGET).o -c $(SRC_DIR)/$(TARGET).cpp -Wall -fPIC -I$(PYTHON_INCLUDE) -I$(BOOST_INC)
++
++$(OUTPUT_DIR)/process.o:
++	$(CC) -std=c++11 -o $(OUTPUT_DIR)/process.o -c $(SRC_DIR)/process.cpp -Wall -fPIC -I$(PYTHON_INCLUDE) -I$(BOOST_INC)
+ 
+ 
+ clean:
+Index: src/sigproengine.cpp
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- src/sigproengine.cpp	(date 1494165111000)
++++ src/sigproengine.cpp	(revision )
+@@ -1,55 +1,56 @@
+ #include <stdio.h>
+ #include <iostream>
+ 
++
+ #include <boost/python.hpp>
+ #include <boost/python/numpy.hpp>
+ 
++#include "process.h"
++
+ namespace bp = boost::python;
+-namespace bn = boost::python::numpy;
++namespace np = boost::python::numpy;
+ 
++void func(void) {
+ 
+-class Gain {
++    std::cout << "TEST FUNCTION STARTS\n" << std::endl;
+ 
++    Gain g;
+ 
+-    public:
+-        float gain;
+-        int points_per_trace;
++    const int N = 5;
++    bp::tuple shape = bp::make_tuple(N);
++    np::dtype dtype = np::dtype::get_builtin<float>();
++    np::ndarray data = np::zeros(shape, dtype);
+ 
+-        void setup(int points_per_trace, float gain) {
+-            this->gain = gain;
+-            this->points_per_trace = points_per_trace;
+-        }
+ 
+-        void apply(float data[]) {
+-            for (int ii=0; ii < this->points_per_trace; ii++) {
+-                data[ii] *= this->gain;
++    for (int ii=0; ii<N; ii++) {
++        data[ii] = ii;
+-            }
++    }
+-        }
+ 
+-};
++    g.setup(N, 10.0);
++    g.apply(data);
+ 
+-void func(void) {
++    std::cout << bp::extract<char const *>(bp::str(data)) << std::endl;
+ 
+-    std::cout << "TEST" << std::endl;
+ 
+-    Gain g;
+-    const int N = 5;
+ 
+-    float data[N] = {1, 2, 3, 4, 5};
++    std::cout << "\nTEST FUNCTION ENDS" << std::endl;
++};
+ 
+-    g.setup(N, 2.0);
+-    g.apply(data);
+ 
+-    for (int ii=0; ii<N; ii++) {
+-        std::cout << data[ii] << std::endl;
+-    }
+ 
+-};
++BOOST_PYTHON_MODULE(sigproengine) {
+ 
++    using namespace boost::python;
+ 
+-BOOST_PYTHON_MODULE(sigproengine) {
++    Py_Initialize();
++    np::initialize();
+ 
+-    bn::initialize();
+ 
+-    bp::def("func", func);
++
++    class_<Gain>("Gain", init<>())
++        .def("setup", &Gain::setup)
++        .def("apply", &Gain::apply)
++        ;
++
++    def("func", func);
+ }

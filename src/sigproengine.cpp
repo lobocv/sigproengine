@@ -16,36 +16,36 @@ namespace np = boost::python::numpy;
 
 
 void func(void) {
-    const int N = 5;
-
-    std::cout << "TEST FUNCTION STARTS\n" << std::endl;
-
-
-    Gain g;
-    Gain G;
-    g.setup(N, 10.0);
-
-    ProcessingChain pc;
-    pc.add_process(&g);
-
-
-    bp::tuple shape = bp::make_tuple(N);
-    np::dtype dtype = np::dtype::get_builtin<float>();
-    np::ndarray data = np::zeros(shape, dtype);
-
-
-    for (int ii=0; ii<N; ii++) {
-        data[ii] = ii;
-    }
-
-
-    pc.apply(data, data);
-
-    std::cout << bp::extract<char const *>(bp::str(data)) << std::endl;
-
-
-
-    std::cout << "\nTEST FUNCTION ENDS" << std::endl;
+//    const int N = 5;
+//
+//    std::cout << "TEST FUNCTION STARTS\n" << std::endl;
+//
+//
+//    Gain g;
+//    Gain G;
+//    g.setup(N, 10.0);
+//
+//    ProcessingChain pc;
+//    pc.add_process(&g);
+//
+//
+//    bp::tuple shape = bp::make_tuple(N);
+//    np::dtype dtype = np::dtype::get_builtin<float>();
+//    np::ndarray data = np::zeros(shape, dtype);
+//
+//
+//    for (int ii=0; ii<N; ii++) {
+//        data[ii] = ii;
+//    }
+//
+//
+//    pc.apply(data, data);
+//
+//    std::cout << bp::extract<char const *>(bp::str(data)) << std::endl;
+//
+//
+//
+//    std::cout << "\nTEST FUNCTION ENDS" << std::endl;
 };
 
 
@@ -64,7 +64,8 @@ BOOST_PYTHON_MODULE(sigproengine) {
 
 
     // To expose overloaded functions, we must create pointers to each overloaded function and pass them to .def()
-    void (ProcessingChain::*ptr_apply_to)(np::ndarray, np::ndarray) = &ProcessingChain::apply;
+    void (ProcessingChain::*ptr_apply_to)(np::ndarray, bp::list) = &ProcessingChain::apply;
+//    void (ProcessingChain::*ptr_pc_apply)(np::ndarray, bp::list) = &ProcessingChain::apply;
 
     class_<ProcessingChain, bases<Process>>("ProcessingChain", init<>())
         .def("add_process", &ProcessingChain::add_process)

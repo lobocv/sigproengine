@@ -29,12 +29,13 @@ class ProcessingChain : public Process {
         const char* getName();
         void add_process(Process* p);
         void clear();
-        void apply(np::ndarray inData, np::ndarray outData);
+        void apply(np::ndarray inData);
+        void apply(np::ndarray inData, bp::list outDataList);
         bp::dict json_save();
         void json_load(bp::dict params);
 
     private:
-
+    
         class_mapper process_map = { {"Gain", &createInstance<Gain>} };
 
 };

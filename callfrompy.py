@@ -19,6 +19,7 @@ class SigProEngineTest(unittest.TestCase):
         self.outData[:] = 1
 
     def test_recursive_processing_chain(self):
+        print( "STARTING TEST %s" % "test_recursive_processing_chain")
         g = spe.Gain()
         g.setup(N, GAIN, True)
 
@@ -31,11 +32,29 @@ class SigProEngineTest(unittest.TestCase):
             if i > 0:
                 chains[i-1].add_process(pc)
 
-        chains[0].apply(self.inData, self.outData)
-        self.assertEqual(self.outData[0], GAIN ** N_CHAINS * self.inData[0])
+        pc = chains[0]
+
+        # chains[0].apply(self.inData, [self.outData, [self.outData], [self.outData]])
+        # self.assertEqual(self.outData[0], GAIN ** N_CHAINS * self.inData[0])
+        outData = self.outData
+        outData2 = self.outData.copy()
+        inData = self.inData
+
+        # Keep apply the output to the same array, outData
+        chains[0].apply(inData, [outData, [outData, [outData]]] )
+        self.assertEqual(outData[0], GAIN ** N_CHAINS * self.inData[0])
 
         self.tearDown()
-        chains[0].apply(self.inData)    # Apply in-place
+
+        # Redirect the output from the second chain to outData2
+        chains[0].apply(inData, [outData, [outData2, [outData]]] )
+        self.assertEqual(outData[0], GAIN ** (N_CHAINS-1) * inData[0])
+        self.assertEqual(outData2[0], GAIN ** 1 * inData[0])
+
+        self.tearDown()
+        
+        # Apply in-place
+        chains[0].apply(self.inData)    
         self.assertEqual(self.inData[0], GAIN ** N_CHAINS)
 
     def test_apply_process_in_place(self):
@@ -58,7 +77,7 @@ class SigProEngineTest(unittest.TestCase):
         conf = {"processes": [{"Gain": {"points_per_trace": 10, "enabled": True, "gain": 5}}]}
         pc = spe.ProcessingChain()
         pc.json_load(conf)
-        pc.apply(self.inData, self.outData)
+        pc.apply(self.inData, [self.outData])
         self.assertEqual(self.outData.sum(), GAIN * len(self.outData))
         conf2 = pc.json_save()
         self.assertEqual(conf, conf2)

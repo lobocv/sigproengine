@@ -30,22 +30,46 @@ void ProcessingChain::clear() {
 }
 
 
-void ProcessingChain::apply(np::ndarray inData, np::ndarray outData) {
+void ProcessingChain::apply(np::ndarray inData) {
+    bp::list outDataList;
+    outDataList.append(inData);
+    this->apply(inData, outDataList);
+}
+
+void ProcessingChain::apply(np::ndarray inData, bp::list outDataList) {
     Process* p;
-    std::cout << "Calling Processing Chain Apply" << std::endl;
+    ProcessingChain* subChain;
+    const char* process_name;
+//    int nSubChains = this->subChainCount;
     bool inplace = false;
+
+    std::cout << "Calling Processing Chain Apply" << std::endl;
+
+    np::ndarray outData = bp::extract<np::ndarray>(outDataList[0]);
+
     for (unsigned int ii=0; ii < this->processes.size(); ii++) {
         p = &(this->processes[ii].get());
-//        std::cout << "Enabled " << p->enabled << std::endl;
-        if (p->enabled) {
-            if (inplace) {
-                p->apply(inData, outData);
-                inplace = true;
+        process_name = p->getName();
+        std::cout << "Attempting to call process : " << process_name << std::endl;
+        if ( std::strcmp(process_name, "ProcessingChain") == 0 ) {
+            outDataList = bp::extract<bp::list>(outDataList[ii]);
+            subChain = static_cast<ProcessingChain*>(p);
+            if (subChain->enabled) {
+                subChain->apply(outData, outDataList);
             }
-            else {
-                p->apply(outData);
-            }
+        }
+        else {
 
+            if (p->enabled) {
+                if (inplace) {
+                    p->apply(inData, outData);
+                    inplace = true;
+                }
+                else {
+                    p->apply(outData);
+                }
+
+            }
         }
     }
 
