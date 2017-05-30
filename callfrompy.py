@@ -13,7 +13,6 @@ class SigProEngineTest(unittest.TestCase):
         super(SigProEngineTest, self).__init__(*args)
         self.inData = np.ones(N, dtype=np.float)
         self.outData = self.inData.copy()
-        self.pc = spe.ProcessingChain()
 
     def tearDown(self):
         self.inData[:] = 1
@@ -32,18 +31,21 @@ class SigProEngineTest(unittest.TestCase):
             if i > 0:
                 chains[i-1].add_process(pc)
 
-        # print(chains[0].json_save())
-        # chains[0].apply(self.inData)
         chains[0].apply(self.inData, self.outData)
-        print (self.inData)
-        print (self.outData)
-        # self.assertEqual(self.outData[0], GAIN ** N_CHAINS * self.outData[0])
+        self.assertEqual(self.outData[0], GAIN ** N_CHAINS * self.inData[0])
+
+        self.tearDown()
+        chains[0].apply(self.inData)    # Apply in-place
+        self.assertEqual(self.inData[0], GAIN ** N_CHAINS)
 
     def test_apply_process_in_place(self):
+        pc = spe.ProcessingChain()
         g = spe.Gain()
         g.setup(N, GAIN, True)
-        g.apply(self.inData)
-        self.assertEqual(self.inData.sum(), GAIN * len(self.inData))
+        pc.add_process(g)
+        pc.add_process(g)
+        pc.apply(self.inData)
+        self.assertEqual(self.inData.sum(), GAIN**2 * len(self.inData))
 
     def test_apply_process(self):
         g = spe.Gain()
@@ -54,10 +56,11 @@ class SigProEngineTest(unittest.TestCase):
 
     def test_json(self):
         conf = {"processes": [{"Gain": {"points_per_trace": 10, "enabled": True, "gain": 5}}]}
-        self.pc.json_load(conf)
-        self.pc.apply(self.inData, self.outData)
+        pc = spe.ProcessingChain()
+        pc.json_load(conf)
+        pc.apply(self.inData, self.outData)
         self.assertEqual(self.outData.sum(), GAIN * len(self.outData))
-        conf2 = self.pc.json_save()
+        conf2 = pc.json_save()
         self.assertEqual(conf, conf2)
 
 if __name__ == '__main__':
