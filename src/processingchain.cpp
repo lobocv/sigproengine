@@ -14,6 +14,12 @@
 namespace np = boost::python::numpy;
 namespace bp = boost::python;
 
+
+const char* ProcessingChain::getName() {
+    return "ProcessingChain";
+}
+
+
 void ProcessingChain::add_process(Process* p) {
     this->processes.push_back(std::ref(*p));
 }
