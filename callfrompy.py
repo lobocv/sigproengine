@@ -12,7 +12,7 @@ class SigProEngineTest(unittest.TestCase):
     def __init__(self, *args):
         super(SigProEngineTest, self).__init__(*args)
         self.inData = np.ones(N, dtype=np.float)
-        self.outData = self.inData.copy()
+        self.outData = np.zeros_like(self.inData)
 
     def tearDown(self):
         self.inData[:] = 1
@@ -38,18 +38,20 @@ class SigProEngineTest(unittest.TestCase):
         # self.assertEqual(self.outData[0], GAIN ** N_CHAINS * self.inData[0])
         outData = self.outData
         outData2 = self.outData.copy()
+        outData3 = self.outData.copy()
         inData = self.inData
 
-        # Keep apply the output to the same array, outData
-        chains[0].apply(inData, [outData, [outData, [outData]]] )
-        self.assertEqual(outData[0], GAIN ** N_CHAINS * self.inData[0])
+        # # Keep apply the output to the same array, outData
+        # chains[0].apply(inData, [outData, [outData, [outData]]] )
+        # self.assertEqual(outData[0], GAIN ** N_CHAINS * self.inData[0])
 
         self.tearDown()
 
         # Redirect the output from the second chain to outData2
-        chains[0].apply(inData, [outData, [outData2, [outData]]] )
-        self.assertEqual(outData[0], GAIN ** (N_CHAINS-1) * inData[0])
-        self.assertEqual(outData2[0], GAIN ** 1 * inData[0])
+        chains[0].apply(inData, [outData, [outData2, [outData3]]])
+        self.assertEqual(outData[0], GAIN ** 1 * inData[0])
+        self.assertEqual(outData2[0], GAIN ** 2 * inData[0])
+        self.assertEqual(outData3[0], GAIN ** 3 * inData[0])
 
         self.tearDown()
         

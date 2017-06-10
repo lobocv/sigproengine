@@ -47,7 +47,6 @@ void ProcessingChain::apply(np::ndarray inData, bp::list outDataList) {
     Process* p;
     ProcessingChain* subChain;
     const char* process_name;
-    bool inplace = false;
 
     std::cout << "Calling Processing Chain Apply" << std::endl;
 
@@ -59,25 +58,17 @@ void ProcessingChain::apply(np::ndarray inData, bp::list outDataList) {
         std::cout << "Attempting to call process : " << process_name << " isNode = " << p->isNode << std::endl;
 
         if ( p->isNode ) {
-            outDataList = bp::extract<bp::list>(outDataList[ii]);
             subChain = static_cast<ProcessingChain*>(p);
             if (subChain->enabled) {
-                subChain->apply(outData, outDataList);
+                outDataList = bp::extract<bp::list>(outDataList[ii]);
+                subChain->apply(inData, outDataList);
             }
         }
-        else {
-
-            if (p->enabled) {
-                if (inplace) {
-                    p->apply(inData, outData);
-                    inplace = true;
-                }
-                else {
-                    p->apply(outData);
-                }
-
-            }
+        else if (p->enabled) {
+                p->apply(inData, outData);
+                inData = outData;           // Output becomes the input for the next process
         }
+
     }
 
     std::cout << "Done Calling Processing Chain Apply" << std::endl;

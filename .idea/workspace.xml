@@ -2,16 +2,10 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="779b041b-d16f-4567-9894-a0b783eed222" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/gain.o" afterPath="$PROJECT_DIR$/bin/gain.o" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/process.o" afterPath="$PROJECT_DIR$/bin/process.o" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/processingchain.o" afterPath="$PROJECT_DIR$/bin/processingchain.o" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/sigproengine.o" afterPath="$PROJECT_DIR$/bin/sigproengine.o" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/sigproengine.so" afterPath="$PROJECT_DIR$/bin/sigproengine.so" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/callfrompy.py" afterPath="$PROJECT_DIR$/callfrompy.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/process.cpp" afterPath="$PROJECT_DIR$/src/process.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/process.h" afterPath="$PROJECT_DIR$/src/process.h" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/processingchain.cpp" afterPath="$PROJECT_DIR$/src/processingchain.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/processingchain.h" afterPath="$PROJECT_DIR$/src/processingchain.h" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <list id="eaec04e5-d887-4fc2-b25c-047a2f953ac7" name="process.cpp" comment="process.cpp" />
@@ -78,7 +72,7 @@
         <entry file="file://$PROJECT_DIR$/src/process.h">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="31" column="34" selection-start-line="31" selection-start-column="34" selection-end-line="31" selection-end-column="34" />
+              <caret line="32" column="0" selection-start-line="32" selection-start-column="0" selection-end-line="32" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -98,7 +92,7 @@
         <entry file="file://$PROJECT_DIR$/src/processingchain.cpp">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="55" column="24" selection-start-line="55" selection-start-column="24" selection-end-line="55" selection-end-column="24" />
+              <caret line="37" column="0" selection-start-line="37" selection-start-column="0" selection-end-line="37" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -108,7 +102,7 @@
         <entry file="file://$PROJECT_DIR$/src/processingchain.h">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="42" column="0" selection-start-line="42" selection-start-column="0" selection-end-line="42" selection-end-column="0" />
+              <caret line="41" column="0" selection-start-line="41" selection-start-column="0" selection-end-line="41" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -117,8 +111,8 @@
       <file leaf-file-name="callfrompy.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/callfrompy.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.8121547">
-              <caret line="81" column="14" selection-start-line="81" selection-start-column="14" selection-end-line="81" selection-end-column="14" />
+            <state vertical-scroll-proportion="-0.24419889">
+              <caret line="25" column="19" selection-start-line="25" selection-start-column="19" selection-end-line="25" selection-end-column="19" />
               <folding>
                 <element signature="e#0#15#0" expanded="true" />
               </folding>
@@ -706,11 +700,11 @@
       <breakpoints>
         <line-breakpoint enabled="true" type="python-line">
           <url>file://$PROJECT_DIR$/callfrompy.py</url>
-          <line>104</line>
+          <line>106</line>
         </line-breakpoint>
         <line-breakpoint enabled="true" type="python-line">
           <url>file://$PROJECT_DIR$/callfrompy.py</url>
-          <line>78</line>
+          <line>80</line>
           <option name="timeStamp" value="1" />
         </line-breakpoint>
       </breakpoints>
@@ -1094,7 +1088,7 @@
     <entry file="file://$PROJECT_DIR$/src/process.h">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="31" column="34" selection-start-line="31" selection-start-column="34" selection-end-line="31" selection-end-column="34" />
+          <caret line="32" column="0" selection-start-line="32" selection-start-column="0" selection-end-line="32" selection-end-column="0" />
           <folding />
         </state>
       </provider>
@@ -1102,7 +1096,7 @@
     <entry file="file://$PROJECT_DIR$/src/processingchain.h">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="42" column="0" selection-start-line="42" selection-start-column="0" selection-end-line="42" selection-end-column="0" />
+          <caret line="41" column="0" selection-start-line="41" selection-start-column="0" selection-end-line="41" selection-end-column="0" />
           <folding />
         </state>
       </provider>
@@ -1110,7 +1104,7 @@
     <entry file="file://$PROJECT_DIR$/src/processingchain.cpp">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="55" column="24" selection-start-line="55" selection-start-column="24" selection-end-line="55" selection-end-column="24" />
+          <caret line="37" column="0" selection-start-line="37" selection-start-column="0" selection-end-line="37" selection-end-column="0" />
           <folding />
         </state>
       </provider>
@@ -1125,8 +1119,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/callfrompy.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.8121547">
-          <caret line="81" column="14" selection-start-line="81" selection-start-column="14" selection-end-line="81" selection-end-column="14" />
+        <state vertical-scroll-proportion="-0.24419889">
+          <caret line="25" column="19" selection-start-line="25" selection-start-column="19" selection-end-line="25" selection-end-column="19" />
           <folding>
             <element signature="e#0#15#0" expanded="true" />
           </folding>
