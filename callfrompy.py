@@ -75,6 +75,17 @@ class SigProEngineTest(unittest.TestCase):
         self.assertEqual(self.inData.sum(), len(self.inData))
         self.assertEqual(self.outData.sum(), GAIN * len(self.outData))
 
+    def test_disable_process(self):
+        pc = spe.ProcessingChain()
+        g = spe.Gain()
+        g.setup(N, GAIN, True)
+        g2 = spe.Gain()
+        g2.setup(N, GAIN, False)
+        pc.add_process(g)
+        pc.add_process(g2)
+        pc.apply(self.inData)
+        self.assertEqual(self.inData.sum(), GAIN**1 * len(self.inData))
+
     def test_json(self):
         conf = {"processes": [{"Gain": {"points_per_trace": 10, "enabled": True, "gain": 5}}]}
         pc = spe.ProcessingChain()
