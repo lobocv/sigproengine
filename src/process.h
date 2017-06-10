@@ -1,6 +1,7 @@
 #ifndef PROCESS_INCLUDED
 #define PROCESS_INCLUDED
 
+
 #include <boost/python/numpy.hpp>
 #include <boost/property_tree/ptree.hpp>
 
@@ -10,21 +11,30 @@ namespace bp = boost::python;
 
 class Process {
 
-    protected:
-        bool initialized = false;
 
     public:
-        bool enabled = true;
+        bool enabled = true;              // Is the process enabled
+        bool isNode = false;              // Is the Process a node in the ProcessingChain
 
         void setup(bool enabled=true);
+        virtual void joinChain(Process* p);
+
+        // Getter methods
         virtual const char* getName();
         virtual bool isInitialized(Process* p);
+
+        // Applying methods
         virtual void apply(np::ndarray inData, np::ndarray outData);
         virtual void apply(np::ndarray inData);
+
+        // Saving / Loading methods
         virtual bp::dict json_save();
         virtual void json_load(bp::dict params);
 
-
+    protected:
+        bool initialized = false;
+        
+        
 };
 
 

@@ -21,6 +21,10 @@ void Process::setup(bool enabled) {
     this->enabled = enabled;
 }
 
+void Process::joinChain(Process* p) {
+    // Called just before a process joins another chain
+}
+
 bool Process::isInitialized(Process* p) {
     return this->initialized;
 }

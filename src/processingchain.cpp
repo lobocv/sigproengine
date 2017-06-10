@@ -20,7 +20,14 @@ const char* ProcessingChain::getName() {
 }
 
 
+void ProcessingChain::joinChain(Process* p) {
+    std::cout << "joingChain" << std::endl;
+    this->isNode = true;
+}
+
 void ProcessingChain::add_process(Process* p) {
+    std::cout << "add_process" << std::endl;
+    p->joinChain(this);   
     this->processes.push_back(std::ref(*p));
 }
 
@@ -40,7 +47,6 @@ void ProcessingChain::apply(np::ndarray inData, bp::list outDataList) {
     Process* p;
     ProcessingChain* subChain;
     const char* process_name;
-//    int nSubChains = this->subChainCount;
     bool inplace = false;
 
     std::cout << "Calling Processing Chain Apply" << std::endl;
@@ -50,8 +56,9 @@ void ProcessingChain::apply(np::ndarray inData, bp::list outDataList) {
     for (unsigned int ii=0; ii < this->processes.size(); ii++) {
         p = &(this->processes[ii].get());
         process_name = p->getName();
-        std::cout << "Attempting to call process : " << process_name << std::endl;
-        if ( std::strcmp(process_name, "ProcessingChain") == 0 ) {
+        std::cout << "Attempting to call process : " << process_name << " isNode = " << p->isNode << std::endl;
+
+        if ( p->isNode ) {
             outDataList = bp::extract<bp::list>(outDataList[ii]);
             subChain = static_cast<ProcessingChain*>(p);
             if (subChain->enabled) {

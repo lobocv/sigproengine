@@ -25,9 +25,11 @@ template<typename T> Process* createInstance() {
 class ProcessingChain : public Process {
 
     public:
+        
         std::vector<std::reference_wrapper<Process>> processes;
         const char* getName();
         void add_process(Process* p);
+        void joinChain(Process* p);
         void clear();
         void apply(np::ndarray inData);
         void apply(np::ndarray inData, bp::list outDataList);
