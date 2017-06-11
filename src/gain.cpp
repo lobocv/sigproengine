@@ -40,14 +40,12 @@ void Gain::apply(np::ndarray inData, np::ndarray outData) {
 
 
 bp::dict Gain::json_save() {
-    bp::dict root, params;
+    bp::dict params = Process::json_save();
 
     params["points_per_trace"] = this->points_per_trace;
     params["gain"] = this->gain;
-    params["enabled"] = this->enabled;
-    root["Gain"] = params;
-
-    return root;
+    
+    return params;
 
 }
 

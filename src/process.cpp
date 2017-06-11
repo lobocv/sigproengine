@@ -39,8 +39,10 @@ void Process::apply(np::ndarray inData) {
 }
 
 bp::dict Process::json_save() {
-    bp::dict tree;
-    return tree;
+    bp::dict params;
+    params["name"] = this->getName();
+    params["enabled"] = this->enabled;
+    return params;
     }
 
 void Process::json_load(bp::dict params) {

@@ -106,11 +106,11 @@ void ProcessingChain::json_load(bp::dict json) {
     bp::dict prodict, proparams;
 
     prolist = bp::extract<bp::list>(json["processes"]);
+    
 
     for (int ii=0; ii < len(prolist); ii++) {
-          prodict = bp::extract<bp::dict>(prolist[ii]);
-          process_name = bp::extract<std::string>(prodict.keys()[0]);
-          proparams = bp::extract<bp::dict>(prodict.values()[0]);
+          proparams = bp::extract<bp::dict>(prolist[ii]);
+          process_name = bp::extract<std::string>(proparams["name"]);
           std::cout << "Creating process " << process_name << std::endl;
           p = this->process_map[process_name]();
           std::cout << "Initializing process " << process_name << std::endl;
