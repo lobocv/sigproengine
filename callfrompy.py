@@ -25,6 +25,7 @@ class SigProEngineTest(unittest.TestCase):
         pc_100 = spe.ProcessingChain()
         pc_110 = spe.ProcessingChain()
         pc_120 = spe.ProcessingChain()
+        pc_121 = spe.ProcessingChain()
 
         g_1 = spe.Gain()
         g_1.setup(N, 2.0, True)
@@ -32,35 +33,52 @@ class SigProEngineTest(unittest.TestCase):
         g_2.setup(N, 2.0, True)
 
         pc_100.add_process(g_1)         # Gain by x2
-        pc_100.add_process(pc_110)      # Fork output of step 1 into new PC (Gain x3) --> : 2 x 3 = 6
-        pc_100.add_process(pc_120)      # Fork output of step 1 into new PC (Gain x4) --> : 2 x 4 = 8
-        pc_100.add_process(g_2)         # Gain by x2 to output of step 1              --> : 2 x 2 = 4
+        pc_100.add_process(pc_110)      # Fork output of step 1 into new PC (Gain x3) --> : 2 x 3     = 6
+        pc_100.add_process(pc_120)      # Fork output of step 1 into new PC (Gain x4) --> : 2 x 4     = 8
+                                        #    |
+                                        #    L--> This chain has another PC (Gain x 5)--> : 2 x 4 x 5 = 40
+        pc_100.add_process(g_2)         # Gain by x2 to output of step 1              --> : 2 x 2     = 4
+
 
         g_3 = spe.Gain()
         g_3.setup(N, 3.0, True)
         pc_110.add_process(g_3)
 
+        g_5 = spe.Gain()
+        g_5.setup(N, 5.0, True)
+        pc_121.add_process(g_5)
+
         g_4 = spe.Gain()
         g_4.setup(N, 4.0, True)
         pc_120.add_process(g_4)
+        pc_120.add_process(pc_121)
 
         outData = self.outData
         outData2 = self.outData.copy()
         outData3 = self.outData.copy()
+        outData4 = self.outData.copy()
 
         # Define output buffers for each processing chain
-        output_structure = [outData, [outData2], [outData3]]
+        output_structure = [outData,                # First chain
+                                [outData2],         # Second level Chain
+                                [outData3,          # Second level Chain
+                                        [outData4]  # Third level Chain
+                                 ]
+
+                            ]
 
         pc_100.apply(self.inData, output_structure)
 
         first_chain_output = outData[0]
         second_chain_output = outData2[0]
         third_chain_output = outData3[0]
+        fourth_chain_output = outData4[0]
 
-        print (self.inData[0], first_chain_output, second_chain_output, third_chain_output)
+        print (self.inData[0], first_chain_output, second_chain_output, third_chain_output, fourth_chain_output)
         self.assertEqual(first_chain_output,  2 * 2)
         self.assertEqual(second_chain_output, 2 * 3)
         self.assertEqual(third_chain_output,  2 * 4)
+        self.assertEqual(fourth_chain_output,  2 * 4 * 5)
 
     def test_apply_process_in_place(self):
         pc = spe.ProcessingChain()
