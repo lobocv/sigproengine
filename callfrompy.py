@@ -20,44 +20,47 @@ class SigProEngineTest(unittest.TestCase):
 
     def test_recursive_processing_chain(self):
         print( "STARTING TEST %s" % "test_recursive_processing_chain")
-        g = spe.Gain()
-        g.setup(N, GAIN, True)
 
-        chains = []
-        N_CHAINS = 3
-        for i in range(N_CHAINS):
-            pc = spe.ProcessingChain()
-            pc.add_process(g)
-            chains.append(pc)
-            if i > 0:
-                chains[i-1].add_process(pc)
 
-        pc = chains[0]
+        pc_100 = spe.ProcessingChain()
+        pc_110 = spe.ProcessingChain()
+        pc_120 = spe.ProcessingChain()
 
-        # chains[0].apply(self.inData, [self.outData, [self.outData], [self.outData]])
-        # self.assertEqual(self.outData[0], GAIN ** N_CHAINS * self.inData[0])
+        g_1 = spe.Gain()
+        g_1.setup(N, 2.0, True)
+        g_2 = spe.Gain()
+        g_2.setup(N, 2.0, True)
+
+        pc_100.add_process(g_1)         # Gain by x2
+        pc_100.add_process(pc_110)      # Fork output of step 1 into new PC (Gain x3) --> : 2 x 3 = 6
+        pc_100.add_process(pc_120)      # Fork output of step 1 into new PC (Gain x4) --> : 2 x 4 = 8
+        pc_100.add_process(g_2)         # Gain by x2 to output of step 1              --> : 2 x 2 = 4
+
+        g_3 = spe.Gain()
+        g_3.setup(N, 3.0, True)
+        pc_110.add_process(g_3)
+
+        g_4 = spe.Gain()
+        g_4.setup(N, 4.0, True)
+        pc_120.add_process(g_4)
+
         outData = self.outData
         outData2 = self.outData.copy()
         outData3 = self.outData.copy()
-        inData = self.inData
 
-        # # Keep apply the output to the same array, outData
-        # chains[0].apply(inData, [outData, [outData, [outData]]] )
-        # self.assertEqual(outData[0], GAIN ** N_CHAINS * self.inData[0])
+        # Define output buffers for each processing chain
+        output_structure = [outData, [outData2], [outData3]]
 
-        self.tearDown()
+        pc_100.apply(self.inData, output_structure)
 
-        # Redirect the output from the second chain to outData2
-        chains[0].apply(inData, [outData, [outData2, [outData3]]])
-        self.assertEqual(outData[0], GAIN ** 1 * inData[0])
-        self.assertEqual(outData2[0], GAIN ** 2 * inData[0])
-        self.assertEqual(outData3[0], GAIN ** 3 * inData[0])
+        first_chain_output = outData[0]
+        second_chain_output = outData2[0]
+        third_chain_output = outData3[0]
 
-        self.tearDown()
-        
-        # Apply in-place
-        # chains[0].apply(self.inData)
-        # self.assertEqual(self.inData[0], GAIN ** N_CHAINS)
+        print (self.inData[0], first_chain_output, second_chain_output, third_chain_output)
+        self.assertEqual(first_chain_output,  2 * 2)
+        self.assertEqual(second_chain_output, 2 * 3)
+        self.assertEqual(third_chain_output,  2 * 4)
 
     def test_apply_process_in_place(self):
         pc = spe.ProcessingChain()

@@ -46,7 +46,9 @@ void ProcessingChain::apply(np::ndarray inData) {
 void ProcessingChain::apply(np::ndarray inData, bp::list outDataList) {
     Process* p;
     ProcessingChain* subChain;
+    bp::list subchain_outDataList;
     const char* process_name;
+    int nodeCount = 0;
 
     std::cout << "Calling Processing Chain Apply" << std::endl;
 
@@ -60,8 +62,9 @@ void ProcessingChain::apply(np::ndarray inData, bp::list outDataList) {
         if (p->enabled) {
             if ( p->isNode ) {
                 subChain = static_cast<ProcessingChain*>(p);
-                outDataList = bp::extract<bp::list>(outDataList[ii]);
-                subChain->apply(inData, outDataList);
+                nodeCount += 1;
+                subchain_outDataList = bp::extract<bp::list>(outDataList[nodeCount]);
+                subChain->apply(inData, subchain_outDataList);
             }
             else {
                 p->apply(inData, outData);
