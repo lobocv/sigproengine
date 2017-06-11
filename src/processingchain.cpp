@@ -57,16 +57,16 @@ void ProcessingChain::apply(np::ndarray inData, bp::list outDataList) {
         process_name = p->getName();
         std::cout << "Attempting to call process : " << process_name << " isNode = " << p->isNode << std::endl;
 
-        if ( p->isNode ) {
-            subChain = static_cast<ProcessingChain*>(p);
-            if (subChain->enabled) {
+        if (p->enabled) {
+            if ( p->isNode ) {
+                subChain = static_cast<ProcessingChain*>(p);
                 outDataList = bp::extract<bp::list>(outDataList[ii]);
                 subChain->apply(inData, outDataList);
             }
-        }
-        else if (p->enabled) {
+            else {
                 p->apply(inData, outData);
                 inData = outData;           // Output becomes the input for the next process
+            }
         }
 
     }
