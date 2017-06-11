@@ -85,6 +85,7 @@ BOOST_PYTHON_MODULE(sigproengine) {
         .def("apply", ptr_apply)
         .def("json_save", &Gain::json_save)
         .def_readwrite("enabled", &Gain::enabled)
+        .def_readonly("gain", &Gain::gain)
         ;
 
 
