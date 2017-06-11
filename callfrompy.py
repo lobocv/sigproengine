@@ -108,7 +108,9 @@ class SigProEngineTest(unittest.TestCase):
         self.assertEqual(self.inData.sum(), GAIN**1 * len(self.inData))
 
     def test_json(self):
-        conf = {"processes": [{"Gain": {"points_per_trace": 10, "enabled": True, "gain": 5}}]}
+        conf = {"processes": [{"name": "Gain", "points_per_trace": 10, "enabled": True, "gain": 5}
+                              ]
+                }
         pc = spe.ProcessingChain()
         pc.json_load(conf)
         pc.apply(self.inData, [self.outData])
