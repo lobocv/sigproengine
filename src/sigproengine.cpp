@@ -6,6 +6,7 @@
 #include <boost/python/numpy.hpp>
 
 #include "gain.h"
+#include "colormap.h"
 #include "processingchain.h"
 
 
@@ -88,6 +89,16 @@ BOOST_PYTHON_MODULE(sigproengine) {
         .def_readonly("gain", &Gain::gain)
         ;
 
+    void (ColorMap::*ptr_colormap_apply_to)(np::ndarray, np::ndarray) = &ColorMap::apply;
+
+    class_<ColorMap, bases<Process> >("ColorMap", init<>())
+        .def("setup", &ColorMap::setup)
+        .def("apply", ptr_colormap_apply_to)
+        .def("apply", ptr_apply)
+        .def("json_save", &ColorMap::json_save)
+        .def_readwrite("enabled", &ColorMap::enabled)
+        .def_readonly("filepath", &ColorMap::filepath)
+        ;
 
     def("func", func);
 }
