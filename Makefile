@@ -11,7 +11,7 @@ LIBS = -lpython2.7 -lboost_python -lboost_numpy
 SRC_DIR = src
 OUTPUT_DIR = bin
 
-MODULES =$(OUTPUT_DIR)/processingchain.o $(OUTPUT_DIR)/process.o $(OUTPUT_DIR)/gain.o $(OUTPUT_DIR)/sigproengine.o
+MODULES =$(OUTPUT_DIR)/processingchain.o $(OUTPUT_DIR)/process.o $(OUTPUT_DIR)/colormap.o $(OUTPUT_DIR)/gain.o $(OUTPUT_DIR)/sigproengine.o
 
 all: $(MODULES) $(OUTPUT_DIR)/sigproengine.so
 
