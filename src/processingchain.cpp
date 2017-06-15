@@ -39,11 +39,25 @@ void ProcessingChain::clear() {
 
 void ProcessingChain::apply(np::ndarray inData) {
     bp::list outDataList;
+    SIGNAL_DTYPE* inData_raw = reinterpret_cast<SIGNAL_DTYPE*>(inData.get_data());
+    outDataList.append(inData);
+    this->apply(inData_raw, outDataList);
+}
+
+void ProcessingChain::apply(np::ndarray inData, bp::list outDataList) {
+    SIGNAL_DTYPE* inData_raw = reinterpret_cast<SIGNAL_DTYPE*>(inData.get_data());
+    this->apply(inData_raw, outDataList);
+}
+
+
+void ProcessingChain::apply(SIGNAL_DTYPE* inData) {
+    bp::list outDataList;
     outDataList.append(inData);
     this->apply(inData, outDataList);
 }
 
-void ProcessingChain::apply(np::ndarray inData, bp::list outDataList) {
+
+void ProcessingChain::apply(SIGNAL_DTYPE* inData, bp::list outDataList) {
     Process* p;
     ProcessingChain* subChain;
     bp::list subchain_outDataList;
@@ -53,6 +67,7 @@ void ProcessingChain::apply(np::ndarray inData, bp::list outDataList) {
     std::cout << "Calling Processing Chain Apply" << std::endl;
 
     np::ndarray outData = bp::extract<np::ndarray>(outDataList[0]);
+    SIGNAL_DTYPE* outData_raw = reinterpret_cast<SIGNAL_DTYPE*>(outData.get_data());    
 
     for (unsigned int ii=0; ii < this->processes.size(); ii++) {
         p = &(this->processes[ii].get());
@@ -67,8 +82,9 @@ void ProcessingChain::apply(np::ndarray inData, bp::list outDataList) {
                 subChain->apply(inData, subchain_outDataList);
             }
             else {
-                p->apply(inData, outData);
-                inData = outData;           // Output becomes the input for the next process
+                
+                p->apply(inData, outData_raw);
+                inData = outData_raw;           // Output becomes the input for the next process
             }
         }
 

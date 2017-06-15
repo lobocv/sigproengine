@@ -25,8 +25,9 @@ void Gain::setup(int points_per_trace, float gain, bool enabled) {
     Process::setup(enabled);
 }
 
-void Gain::apply(np::ndarray inData, np::ndarray outData) {
+void Gain::apply(SIGNAL_DTYPE* inData, SIGNAL_DTYPE* outData) {
     float g = this->gain;
+    std::cout << "Calling GAIN!!!!" << std::endl;
 
     if (! Process::isInitialized(this)) {
         return;

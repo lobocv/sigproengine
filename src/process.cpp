@@ -29,8 +29,17 @@ bool Process::isInitialized(Process* p) {
     return this->initialized;
 }
 
+void Process::apply(SIGNAL_DTYPE* inData, SIGNAL_DTYPE* outData) {}
+
 void Process::apply(np::ndarray inData, np::ndarray outData) {
-    this->apply(inData, outData);
+    SIGNAL_DTYPE* inData_raw = reinterpret_cast<SIGNAL_DTYPE*>(inData.get_data());
+    SIGNAL_DTYPE* outData_raw = reinterpret_cast<SIGNAL_DTYPE*>(outData.get_data());
+    this->apply(inData_raw, outData_raw);
+}
+
+void Process::apply(SIGNAL_DTYPE* inData) {
+    // Overridden method that uses the same array for in and out data
+    return Process::apply(inData, inData);
 }
 
 void Process::apply(np::ndarray inData) {

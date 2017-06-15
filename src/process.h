@@ -8,6 +8,7 @@
 namespace np = boost::python::numpy;
 namespace bp = boost::python;
 
+typedef double SIGNAL_DTYPE;
 
 class Process {
 
@@ -24,6 +25,8 @@ class Process {
         virtual bool isInitialized(Process* p);
 
         // Applying methods
+        virtual void apply(SIGNAL_DTYPE* inData, SIGNAL_DTYPE* outData);
+        virtual void apply(SIGNAL_DTYPE* inData);
         virtual void apply(np::ndarray inData, np::ndarray outData);
         virtual void apply(np::ndarray inData);
 

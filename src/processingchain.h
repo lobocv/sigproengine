@@ -33,6 +33,8 @@ class ProcessingChain : public Process {
         void clear();
         void apply(np::ndarray inData);
         void apply(np::ndarray inData, bp::list outDataList);
+        void apply(SIGNAL_DTYPE* inData);
+        void apply(SIGNAL_DTYPE* inData, bp::list outDataList);
         bp::dict json_save();
         void json_load(bp::dict params);
 

@@ -58,8 +58,11 @@ BOOST_PYTHON_MODULE(sigproengine) {
     Py_Initialize();
     np::initialize();
 
-    // Pointer to in-place apply function in the base class
-    void (Process::*ptr_apply)(np::ndarray) = &Process::apply;
+    // Pointer to apply functions in the base class
+    void (Process::*ptr_numpy_apply_to)(np::ndarray, np::ndarray) = &Process::apply;
+    void (Process::*ptr_numpy_apply)(np::ndarray) = &Process::apply;
+    void (Process::*ptr_apply)(SIGNAL_DTYPE*) = &Process::apply;
+    
 
     class_<Process>("Process", init<>());
 
@@ -72,17 +75,22 @@ BOOST_PYTHON_MODULE(sigproengine) {
         .def("add_process", &ProcessingChain::add_process)
         .def("json_save", &ProcessingChain::json_save)
         .def("json_load", &ProcessingChain::json_load)
+        .def("apply", ptr_numpy_apply_to)
+        .def("apply", ptr_numpy_apply)
         .def("apply", ptr_apply_to)
         .def("apply", ptr_apply)
         .def("clear", &ProcessingChain::clear)
         ;
 
 
-    void (Gain::*ptr_gain_apply_to)(np::ndarray, np::ndarray) = &Gain::apply;
+    void (Gain::*ptr_gain_apply_to)(SIGNAL_DTYPE*, SIGNAL_DTYPE*) = &Gain::apply;
+
 
     class_<Gain, bases<Process> >("Gain", init<>())
         .def("setup", &Gain::setup)
         .def("apply", ptr_gain_apply_to)
+        .def("apply", ptr_numpy_apply_to)
+        .def("apply", ptr_numpy_apply)
         .def("apply", ptr_apply)
         .def("json_save", &Gain::json_save)
         .def_readwrite("enabled", &Gain::enabled)
