@@ -15,9 +15,8 @@ class ColorMap : public Process {
     public:
         const char* getName();
         std::string filepath;
-        int points_per_trace;
 
-        void setup(int points_per_trace, std::string filepath, bool enabled=true);
+        void setup(std::string filepath, bool enabled=true);
         void apply(np::ndarray inData, np::ndarray outData);
         bp::dict json_save();
         void json_load(bp::dict params);

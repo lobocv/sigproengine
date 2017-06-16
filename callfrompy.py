@@ -28,9 +28,9 @@ class SigProEngineTest(unittest.TestCase):
         pc_121 = spe.ProcessingChain()
 
         g_1 = spe.Gain()
-        g_1.setup(N, 2.0, True)
+        g_1.setup( 2.0, True)
         g_2 = spe.Gain()
-        g_2.setup(N, 2.0, True)
+        g_2.setup( 2.0, True)
 
         pc_100.add_process(g_1)         # Gain by x2
         pc_100.add_process(pc_110)      # Fork output of step 1 into new PC (Gain x3) --> : 2 x 3     = 6
@@ -41,15 +41,15 @@ class SigProEngineTest(unittest.TestCase):
 
 
         g_3 = spe.Gain()
-        g_3.setup(N, 3.0, True)
+        g_3.setup( 3.0, True)
         pc_110.add_process(g_3)
 
         g_5 = spe.Gain()
-        g_5.setup(N, 5.0, True)
+        g_5.setup( 5.0, True)
         pc_121.add_process(g_5)
 
         g_4 = spe.Gain()
-        g_4.setup(N, 4.0, True)
+        g_4.setup( 4.0, True)
         pc_120.add_process(g_4)
         pc_120.add_process(pc_121)
 
@@ -83,7 +83,7 @@ class SigProEngineTest(unittest.TestCase):
     def test_apply_process_in_place(self):
         pc = spe.ProcessingChain()
         g = spe.Gain()
-        g.setup(N, GAIN, True)
+        g.setup(GAIN, True)
         pc.add_process(g)
         pc.add_process(g)
         pc.apply(self.inData)
@@ -91,7 +91,7 @@ class SigProEngineTest(unittest.TestCase):
 
     def test_apply_process(self):
         g = spe.Gain()
-        g.setup(N, GAIN, True)
+        g.setup( GAIN, True)
         g.apply(self.inData, self.outData)
         self.assertEqual(self.inData.sum(), len(self.inData))
         self.assertEqual(self.outData.sum(), GAIN * len(self.outData))
@@ -99,16 +99,16 @@ class SigProEngineTest(unittest.TestCase):
     def test_disable_process(self):
         pc = spe.ProcessingChain()
         g = spe.Gain()
-        g.setup(N, GAIN, True)
+        g.setup(GAIN, True)
         g2 = spe.Gain()
-        g2.setup(N, GAIN, False)
+        g2.setup(GAIN, False)
         pc.add_process(g)
         pc.add_process(g2)
         pc.apply(self.inData)
         self.assertEqual(self.inData.sum(), GAIN**1 * len(self.inData))
 
     def test_json(self):
-        conf = {"processes": [{"name": "Gain", "points_per_trace": 10, "enabled": True, "gain": 5}
+        conf = {"processes": [{"name": "Gain", "enabled": True, "gain": 5}
                               ]
                 }
         pc = spe.ProcessingChain()
@@ -134,7 +134,7 @@ if __name__ == '__main__':
 # #
 # chain = spe.ProcessingChain()
 # # gain = spe.Gain()
-# # gain.setup(N, 1)
+# # gain.setup( 1)
 # # chain.add_process(gain)
 #
 # # print('SAVING JSON\n\n')

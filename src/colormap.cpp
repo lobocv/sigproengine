@@ -17,12 +17,11 @@ const char* ColorMap::getName() {
 }
 
 
-void ColorMap::setup(int points_per_trace, std::string filepath, bool enabled) {
+void ColorMap::setup(std::string filepath, bool enabled) {
     std::ifstream mapfile (filepath);
     std::string line;
 
     this->filepath = filepath;
-    this->points_per_trace = points_per_trace;
     
     if (mapfile.is_open()) {
         while ( getline(mapfile, line) ) {
@@ -48,7 +47,6 @@ void ColorMap::apply(np::ndarray inData, np::ndarray outData) {
 bp::dict ColorMap::json_save() {
     bp::dict params = Process::json_save();
 
-    params["points_per_trace"] = this->points_per_trace;
     params["filepath"] = this->filepath;
     
     return params;
@@ -57,9 +55,7 @@ bp::dict ColorMap::json_save() {
 
 void ColorMap::json_load(bp::dict params) {
     std::cout << "Loading ColorMap" << std::endl;
-    this->setup(bp::extract<int>(params["points_per_trace"]),
-                bp::extract<std::string>(params["filepath"])
-                );
+    this->setup(bp::extract<std::string>(params["filepath"]));
     Process::json_load(params);
 
     }

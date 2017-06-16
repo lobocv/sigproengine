@@ -21,12 +21,10 @@ const char* ProcessingChain::getName() {
 
 
 void ProcessingChain::joinChain(Process* p) {
-    std::cout << "joingChain" << std::endl;
     this->isNode = true;
 }
 
 void ProcessingChain::add_process(Process* p) {
-    std::cout << "add_process" << std::endl;
     p->joinChain(this);   
     this->processes.push_back(std::ref(*p));
 }
@@ -41,23 +39,25 @@ void ProcessingChain::apply(np::ndarray inData) {
     bp::list outDataList;
     SIGNAL_DTYPE* inData_raw = reinterpret_cast<SIGNAL_DTYPE*>(inData.get_data());
     outDataList.append(inData);
-    this->apply(inData_raw, outDataList);
+    
+    this->apply(inData_raw, len(inData), outDataList);
 }
 
 void ProcessingChain::apply(np::ndarray inData, bp::list outDataList) {
     SIGNAL_DTYPE* inData_raw = reinterpret_cast<SIGNAL_DTYPE*>(inData.get_data());
-    this->apply(inData_raw, outDataList);
+    this->apply(inData_raw, len(inData), outDataList);
 }
 
 
-void ProcessingChain::apply(SIGNAL_DTYPE* inData) {
+void ProcessingChain::apply(SIGNAL_DTYPE* inData, int points_per_trace) {
     bp::list outDataList;
     outDataList.append(inData);
-    this->apply(inData, outDataList);
+    this->points_per_trace = points_per_trace;
+    this->apply(inData, points_per_trace, outDataList);
 }
 
 
-void ProcessingChain::apply(SIGNAL_DTYPE* inData, bp::list outDataList) {
+void ProcessingChain::apply(SIGNAL_DTYPE* inData, int points_per_trace, bp::list outDataList) {
     Process* p;
     ProcessingChain* subChain;
     bp::list subchain_outDataList;
@@ -68,6 +68,8 @@ void ProcessingChain::apply(SIGNAL_DTYPE* inData, bp::list outDataList) {
 
     np::ndarray outData = bp::extract<np::ndarray>(outDataList[0]);
     SIGNAL_DTYPE* outData_raw = reinterpret_cast<SIGNAL_DTYPE*>(outData.get_data());    
+    this->points_per_trace = points_per_trace;
+
 
     for (unsigned int ii=0; ii < this->processes.size(); ii++) {
         p = &(this->processes[ii].get());
@@ -79,11 +81,11 @@ void ProcessingChain::apply(SIGNAL_DTYPE* inData, bp::list outDataList) {
                 subChain = static_cast<ProcessingChain*>(p);
                 nodeCount += 1;
                 subchain_outDataList = bp::extract<bp::list>(outDataList[nodeCount]);
-                subChain->apply(inData, subchain_outDataList);
+                subChain->apply(inData, this->points_per_trace, subchain_outDataList);
             }
             else {
                 
-                p->apply(inData, outData_raw);
+                p->apply(inData, this->points_per_trace, outData_raw);
                 inData = outData_raw;           // Output becomes the input for the next process
             }
         }

@@ -19,16 +19,13 @@ const char* Gain::getName() {
 }
 
 
-void Gain::setup(int points_per_trace, float gain, bool enabled) {
+void Gain::setup(float gain, bool enabled) {
     this->gain = gain;
-    this->points_per_trace = points_per_trace;
     Process::setup(enabled);
 }
 
 void Gain::apply(SIGNAL_DTYPE* inData, SIGNAL_DTYPE* outData) {
     float g = this->gain;
-    std::cout << "Calling GAIN!!!!" << std::endl;
-
     if (! Process::isInitialized(this)) {
         return;
     }
@@ -43,7 +40,6 @@ void Gain::apply(SIGNAL_DTYPE* inData, SIGNAL_DTYPE* outData) {
 bp::dict Gain::json_save() {
     bp::dict params = Process::json_save();
 
-    params["points_per_trace"] = this->points_per_trace;
     params["gain"] = this->gain;
     
     return params;
@@ -52,9 +48,7 @@ bp::dict Gain::json_save() {
 
 void Gain::json_load(bp::dict params) {
     std::cout << "Loading Gain" << std::endl;
-    this->setup(bp::extract<int>(params["points_per_trace"]),
-                bp::extract<float>(params["gain"])
-                );
+    this->setup(bp::extract<float>(params["gain"]));
     Process::json_load(params);
 
     }

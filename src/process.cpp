@@ -29,17 +29,24 @@ bool Process::isInitialized(Process* p) {
     return this->initialized;
 }
 
-void Process::apply(SIGNAL_DTYPE* inData, SIGNAL_DTYPE* outData) {}
+void Process::apply(SIGNAL_DTYPE* inData, int points_per_trace, SIGNAL_DTYPE* outData) {
+    this->points_per_trace = points_per_trace;
+    this->apply(inData, outData);
+}
+
+void Process::apply(SIGNAL_DTYPE* inData, SIGNAL_DTYPE* outData) {
+}
 
 void Process::apply(np::ndarray inData, np::ndarray outData) {
     SIGNAL_DTYPE* inData_raw = reinterpret_cast<SIGNAL_DTYPE*>(inData.get_data());
     SIGNAL_DTYPE* outData_raw = reinterpret_cast<SIGNAL_DTYPE*>(outData.get_data());
-    this->apply(inData_raw, outData_raw);
+    std::cout << "Process PPT = " <<  this->points_per_trace << std::endl;
+    this->apply(inData_raw, len(inData), outData_raw);
 }
 
-void Process::apply(SIGNAL_DTYPE* inData) {
+void Process::apply(SIGNAL_DTYPE* inData,  int points_per_trace) {
     // Overridden method that uses the same array for in and out data
-    return Process::apply(inData, inData);
+    return Process::apply(inData, points_per_trace, inData);
 }
 
 void Process::apply(np::ndarray inData) {

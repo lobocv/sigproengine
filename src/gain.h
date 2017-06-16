@@ -15,9 +15,8 @@ class Gain : public Process {
     public:
         const char* getName();
         float gain = 1;
-        int points_per_trace;
 
-        void setup(int points_per_trace, float gain, bool enabled=true);
+        void setup(float gain, bool enabled=true);
         void apply(SIGNAL_DTYPE* inData, SIGNAL_DTYPE* outData);
         bp::dict json_save();
         void json_load(bp::dict params);

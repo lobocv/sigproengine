@@ -61,7 +61,7 @@ BOOST_PYTHON_MODULE(sigproengine) {
     // Pointer to apply functions in the base class
     void (Process::*ptr_numpy_apply_to)(np::ndarray, np::ndarray) = &Process::apply;
     void (Process::*ptr_numpy_apply)(np::ndarray) = &Process::apply;
-    void (Process::*ptr_apply)(SIGNAL_DTYPE*) = &Process::apply;
+    void (Process::*ptr_apply)(SIGNAL_DTYPE*, int) = &Process::apply;
     
 
     class_<Process>("Process", init<>());
