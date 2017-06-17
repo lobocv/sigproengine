@@ -24,15 +24,17 @@ void Gain::setup(float gain, bool enabled) {
     Process::setup(enabled);
 }
 
-void Gain::apply(SIGNAL_DTYPE* inData, SIGNAL_DTYPE* outData, int points_per_trace) {
+SIGNAL_DTYPE* Gain::apply(SIGNAL_DTYPE* inData, SIGNAL_DTYPE* outData, int points_per_trace) {
     float g = this->gain;
     if (! Process::isInitialized(this)) {
-        return;
+        return outData;
     }
 
     for (int ii=0; ii < points_per_trace; ii++) {
         outData[ii] = g * inData[ii];
     }
+
+    return outData;
 }
 
 

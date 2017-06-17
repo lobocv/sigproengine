@@ -49,14 +49,14 @@ void ProcessingChain::apply(np::ndarray inData, bp::list outDataList) {
 }
 
 
-void ProcessingChain::apply(SIGNAL_DTYPE* inData, int points_per_trace) {
+SIGNAL_DTYPE* ProcessingChain::apply(SIGNAL_DTYPE* inData, int points_per_trace) {
     bp::list outDataList;
     outDataList.append(inData);
-    this->apply(inData, outDataList, points_per_trace);
+    return this->apply(inData, outDataList, points_per_trace);
 }
 
 
-void ProcessingChain::apply(SIGNAL_DTYPE* inData, bp::list outDataList, int points_per_trace) {
+SIGNAL_DTYPE* ProcessingChain::apply(SIGNAL_DTYPE* inData, bp::list outDataList, int points_per_trace) {
     Process* p;
     ProcessingChain* subChain;
     bp::list subchain_outDataList;
@@ -91,7 +91,7 @@ void ProcessingChain::apply(SIGNAL_DTYPE* inData, bp::list outDataList, int poin
     }
 
     std::cout << "Done Calling Processing Chain Apply" << std::endl;
-
+    return inData;
 }
 
 bp::dict ProcessingChain::json_save() {

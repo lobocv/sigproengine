@@ -44,14 +44,15 @@ void Process::apply(np::ndarray inData) {
 
 
 
-void Process::apply(SIGNAL_DTYPE* inData, SIGNAL_DTYPE* outData, int points_per_trace) {
+SIGNAL_DTYPE* Process::apply(SIGNAL_DTYPE* inData, SIGNAL_DTYPE* outData, int points_per_trace) {
     if ( points_per_trace > 0 ) {
         this->apply(inData, outData, points_per_trace);
     }    
+    return inData;
 }
 
 
-void Process::apply(SIGNAL_DTYPE* inData,  int points_per_trace) {
+SIGNAL_DTYPE* Process::apply(SIGNAL_DTYPE* inData,  int points_per_trace) {
     // Overridden method that uses the same array for in and out data
     return Process::apply(inData, inData, points_per_trace);
 }
