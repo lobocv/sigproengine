@@ -64,7 +64,9 @@ BOOST_PYTHON_MODULE(sigproengine) {
     void (Process::*ptr_apply)(SIGNAL_DTYPE*, int) = &Process::apply;
     
 
-    class_<Process>("Process", init<>());
+    class_<Process>("Process", init<>())
+            .def_readwrite("points_per_trace", &Process::points_per_trace)
+    ;
 
 
     // To expose overloaded functions, we must create pointers to each overloaded function and pass them to .def()
