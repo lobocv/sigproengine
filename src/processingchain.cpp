@@ -40,12 +40,12 @@ void ProcessingChain::apply(np::ndarray inData) {
     SIGNAL_DTYPE* inData_raw = reinterpret_cast<SIGNAL_DTYPE*>(inData.get_data());
     outDataList.append(inData);
     
-    this->apply(inData_raw, len(inData), outDataList);
+    this->apply(inData_raw, outDataList, len(inData));
 }
 
 void ProcessingChain::apply(np::ndarray inData, bp::list outDataList) {
     SIGNAL_DTYPE* inData_raw = reinterpret_cast<SIGNAL_DTYPE*>(inData.get_data());
-    this->apply(inData_raw, len(inData), outDataList);
+    this->apply(inData_raw, outDataList, len(inData));
 }
 
 
@@ -53,11 +53,11 @@ void ProcessingChain::apply(SIGNAL_DTYPE* inData, int points_per_trace) {
     bp::list outDataList;
     outDataList.append(inData);
     this->points_per_trace = points_per_trace;
-    this->apply(inData, points_per_trace, outDataList);
+    this->apply(inData, outDataList, points_per_trace);
 }
 
 
-void ProcessingChain::apply(SIGNAL_DTYPE* inData, int points_per_trace, bp::list outDataList) {
+void ProcessingChain::apply(SIGNAL_DTYPE* inData, bp::list outDataList, int points_per_trace) {
     Process* p;
     ProcessingChain* subChain;
     bp::list subchain_outDataList;
@@ -81,11 +81,11 @@ void ProcessingChain::apply(SIGNAL_DTYPE* inData, int points_per_trace, bp::list
                 subChain = static_cast<ProcessingChain*>(p);
                 nodeCount += 1;
                 subchain_outDataList = bp::extract<bp::list>(outDataList[nodeCount]);
-                subChain->apply(inData, this->points_per_trace, subchain_outDataList);
+                subChain->apply(inData, subchain_outDataList, this->points_per_trace);
             }
             else {
                 
-                p->apply(inData, this->points_per_trace, outData_raw);
+                p->apply(inData, outData_raw, this->points_per_trace);
                 inData = outData_raw;           // Output becomes the input for the next process
             }
         }
