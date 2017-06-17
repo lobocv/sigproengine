@@ -17,7 +17,7 @@ class Gain : public Process {
         float gain = 1;
 
         void setup(float gain, bool enabled=true);
-        void apply(SIGNAL_DTYPE* inData, SIGNAL_DTYPE* outData);
+        void apply(SIGNAL_DTYPE* inData, SIGNAL_DTYPE* outData, int points_per_trace);
         bp::dict json_save();
         void json_load(bp::dict params);
 

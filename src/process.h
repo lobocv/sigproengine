@@ -17,8 +17,6 @@ class Process {
         bool enabled = true;              // Is the process enabled
         bool isNode = false;              // Is the Process a node in the ProcessingChain
         
-        int points_per_trace;
-
         void setup(bool enabled=true);
         virtual void joinChain(Process* p);
 
@@ -29,7 +27,7 @@ class Process {
         // Applying methods
         virtual void apply(SIGNAL_DTYPE* inData, SIGNAL_DTYPE* outData, int points_per_trace);
         virtual void apply(SIGNAL_DTYPE* inData, int points_per_trace);
-        virtual void apply(SIGNAL_DTYPE* inData, SIGNAL_DTYPE* outData);
+        // virtual void apply(SIGNAL_DTYPE* inData, SIGNAL_DTYPE* outData);
         virtual void apply(np::ndarray inData, np::ndarray outData);
         virtual void apply(np::ndarray inData);
 

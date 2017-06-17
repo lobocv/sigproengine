@@ -65,7 +65,6 @@ BOOST_PYTHON_MODULE(sigproengine) {
     
 
     class_<Process>("Process", init<>())
-            .def_readwrite("points_per_trace", &Process::points_per_trace)
     ;
 
 
@@ -85,7 +84,7 @@ BOOST_PYTHON_MODULE(sigproengine) {
         ;
 
 
-    void (Gain::*ptr_gain_apply_to)(SIGNAL_DTYPE*, SIGNAL_DTYPE*) = &Gain::apply;
+    void (Gain::*ptr_gain_apply_to)(SIGNAL_DTYPE*, SIGNAL_DTYPE*, int) = &Gain::apply;
 
 
     class_<Gain, bases<Process> >("Gain", init<>())

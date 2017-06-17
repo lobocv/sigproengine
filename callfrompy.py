@@ -21,7 +21,6 @@ class SigProEngineTest(unittest.TestCase):
     def test_recursive_processing_chain(self):
         print( "STARTING TEST %s" % "test_recursive_processing_chain")
 
-
         pc_100 = spe.ProcessingChain()
         pc_110 = spe.ProcessingChain()
         pc_120 = spe.ProcessingChain()
@@ -38,7 +37,6 @@ class SigProEngineTest(unittest.TestCase):
                                         #    |
                                         #    L--> This chain has another PC (Gain x 5)--> : 2 x 4 x 5 = 40
         pc_100.add_process(g_2)         # Gain by x2 to output of step 1              --> : 2 x 2     = 4
-
 
         g_3 = spe.Gain()
         g_3.setup( 3.0, True)
@@ -91,7 +89,7 @@ class SigProEngineTest(unittest.TestCase):
 
     def test_apply_process(self):
         g = spe.Gain()
-        g.setup( GAIN, True)
+        g.setup(GAIN, True)
         g.apply(self.inData, self.outData)
         self.assertEqual(self.inData.sum(), len(self.inData))
         self.assertEqual(self.outData.sum(), GAIN * len(self.outData))
