@@ -32,8 +32,8 @@ bool Process::isInitialized(Process* p) {
 
 // Numpy array methods: Set points per trace is passed implicitly with the numpy array object
 void Process::apply(np::ndarray inData, np::ndarray outData) {
-    SIGNAL_DTYPE* inData_raw = reinterpret_cast<SIGNAL_DTYPE*>(inData.get_data());
-    SIGNAL_DTYPE* outData_raw = reinterpret_cast<SIGNAL_DTYPE*>(outData.get_data());
+    SIGNAL inData_raw = SIGNAL(reinterpret_cast<SIGNAL_DTYPE*>(inData.get_data()));
+    SIGNAL outData_raw = SIGNAL(reinterpret_cast<SIGNAL_DTYPE*>(outData.get_data()));
     this->apply(inData_raw, outData_raw, len(inData));
 }
 
@@ -44,7 +44,7 @@ void Process::apply(np::ndarray inData) {
 
 
 
-SIGNAL_DTYPE* Process::apply(SIGNAL_DTYPE* inData, SIGNAL_DTYPE* outData, int points_per_trace) {
+SIGNAL Process::apply(SIGNAL inData, SIGNAL outData, int points_per_trace) {
     if ( points_per_trace > 0 ) {
         this->apply(inData, outData, points_per_trace);
     }    
@@ -52,13 +52,24 @@ SIGNAL_DTYPE* Process::apply(SIGNAL_DTYPE* inData, SIGNAL_DTYPE* outData, int po
 }
 
 
-SIGNAL_DTYPE* Process::apply(SIGNAL_DTYPE* inData,  int points_per_trace) {
+
+SHARED_SIGNAL Process::apply(SHARED_SIGNAL inData, SHARED_SIGNAL outData, int points_per_trace) {
+    SIGNAL unshared_inData = inData.get();
+    SIGNAL unshared_outData = outData.get();
+
+    this->apply(unshared_inData, unshared_outData, points_per_trace);
+    return inData;
+}
+
+
+
+SIGNAL Process::apply(SIGNAL inData,  int points_per_trace) {
     // Overridden method that uses the same array for in and out data
     return Process::apply(inData, inData, points_per_trace);
 }
 
 
-// void Process::apply(SIGNAL_DTYPE* inData, SIGNAL_DTYPE* outData) {
+// void Process::apply(SIGNAL inData, SIGNAL outData) {
     // Implementation of a Process will go here for derived classes
 // }
 

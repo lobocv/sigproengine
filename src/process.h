@@ -9,6 +9,8 @@ namespace np = boost::python::numpy;
 namespace bp = boost::python;
 
 typedef double SIGNAL_DTYPE;
+typedef SIGNAL_DTYPE* SIGNAL;
+typedef std::shared_ptr<SIGNAL_DTYPE> SHARED_SIGNAL;
 
 class Process {
 
@@ -25,9 +27,10 @@ class Process {
         virtual bool isInitialized(Process* p);
 
         // Applying methods
-        virtual SIGNAL_DTYPE* apply(SIGNAL_DTYPE* inData, SIGNAL_DTYPE* outData, int points_per_trace);
-        virtual SIGNAL_DTYPE* apply(SIGNAL_DTYPE* inData, int points_per_trace);
-        // virtual void apply(SIGNAL_DTYPE* inData, SIGNAL_DTYPE* outData);
+        virtual SIGNAL apply(SIGNAL inData, SIGNAL outData, int points_per_trace);
+        virtual SIGNAL apply(SIGNAL inData, int points_per_trace);
+        virtual SHARED_SIGNAL apply(SHARED_SIGNAL inData, SHARED_SIGNAL outData, int points_per_trace);
+        // virtual void apply(SIGNAL inData, SIGNAL outData);
         virtual void apply(np::ndarray inData, np::ndarray outData);
         virtual void apply(np::ndarray inData);
 

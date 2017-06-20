@@ -36,27 +36,32 @@ void ProcessingChain::clear() {
 
 
 void ProcessingChain::apply(np::ndarray inData) {
-    bp::list outDataList;
-    SIGNAL_DTYPE* inData_raw = reinterpret_cast<SIGNAL_DTYPE*>(inData.get_data());
-    outDataList.append(inData);
+    // bp::list outDataList;
+    SIGNAL inData_raw = SIGNAL(reinterpret_cast<SIGNAL_DTYPE*>(inData.get_data()));
+    // outDataList.append(inData);
     
-    this->apply(inData_raw, outDataList, len(inData));
+    this->apply(inData_raw, inData_raw, len(inData));
+    for (int i=0; i < len(inData); i++) {
+        // std::cout << bp::extract<char const*>(inData[i]) << std::endl;
+        // std::cout << inData_raw.get()[i]  << std::endl;
+        // std::cout << "TEST" << std::endl;
+    }
+    std::cout << "NUMPY DONE " << std::endl;
 }
 
-void ProcessingChain::apply(np::ndarray inData, bp::list outDataList) {
-    SIGNAL_DTYPE* inData_raw = reinterpret_cast<SIGNAL_DTYPE*>(inData.get_data());
-    this->apply(inData_raw, outDataList, len(inData));
+void ProcessingChain::apply(np::ndarray inData, np::ndarray outData) {
+    SIGNAL inData_raw = SIGNAL(reinterpret_cast<SIGNAL_DTYPE*>(inData.get_data()));
+    SIGNAL outData_raw = SIGNAL(reinterpret_cast<SIGNAL_DTYPE*>(outData.get_data()));
+    this->apply(inData_raw, outData_raw, len(inData));
 }
 
 
-SIGNAL_DTYPE* ProcessingChain::apply(SIGNAL_DTYPE* inData, int points_per_trace) {
-    bp::list outDataList;
-    outDataList.append(inData);
-    return this->apply(inData, outDataList, points_per_trace);
+SIGNAL ProcessingChain::apply(SIGNAL inData, int points_per_trace) {
+    return this->apply(inData, inData, points_per_trace);
 }
 
 
-SIGNAL_DTYPE* ProcessingChain::apply(SIGNAL_DTYPE* inData, bp::list outDataList, int points_per_trace) {
+SIGNAL ProcessingChain::apply(SIGNAL inData, SIGNAL outData, int points_per_trace) {
     Process* p;
     ProcessingChain* subChain;
     bp::list subchain_outDataList;
@@ -65,8 +70,8 @@ SIGNAL_DTYPE* ProcessingChain::apply(SIGNAL_DTYPE* inData, bp::list outDataList,
 
     std::cout << "Calling Processing Chain Apply" << std::endl;
 
-    np::ndarray outData = bp::extract<np::ndarray>(outDataList[0]);
-    SIGNAL_DTYPE* outData_raw = reinterpret_cast<SIGNAL_DTYPE*>(outData.get_data());    
+    // np::ndarray outData = bp::extract<np::ndarray>(outDataList[0]);
+    // SIGNAL outData_raw = SIGNAL(reinterpret_cast<SIGNAL_DTYPE*>(outData.get_data()));    
 
 
     for (unsigned int ii=0; ii < this->processes.size(); ii++) {
@@ -76,15 +81,32 @@ SIGNAL_DTYPE* ProcessingChain::apply(SIGNAL_DTYPE* inData, bp::list outDataList,
 
         if (p->enabled) {
             if ( p->isNode ) {
+
+                // Create a copy of the data
+                std::cout << "Copying Array" << std::endl;
+                SIGNAL copyData = new SIGNAL_DTYPE[points_per_trace];
+                
+                for (int jj=0; jj < points_per_trace; jj++) {
+                    copyData[jj] = inData[jj];
+                    std::cout << "Array " << jj << " " << copyData[jj] << std::endl;
+                }
+                std::cout << "Done Copying Array" << std::endl;
                 subChain = static_cast<ProcessingChain*>(p);
                 nodeCount += 1;
-                subchain_outDataList = bp::extract<bp::list>(outDataList[nodeCount]);
-                subChain->apply(inData, subchain_outDataList, points_per_trace);
+                subChain->apply(copyData, copyData, points_per_trace);
+
+                bp::PyObject
+                                
+                for (int jj=0; jj < points_per_trace; jj++) {
+                    std::cout << "AFTER Array " << jj << " " << copyData[jj] << std::endl;
+                }
+                delete copyData;
+
             }
             else {
                 
-                p->apply(inData, outData_raw, points_per_trace);
-                inData = outData_raw;           // Output becomes the input for the next process
+                p->apply(inData, outData, points_per_trace);
+                inData = outData;           // Output becomes the input for the next process
             }
         }
 

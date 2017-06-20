@@ -68,7 +68,7 @@ BOOST_PYTHON_MODULE(sigproengine) {
 
 
     // To expose overloaded functions, we must create pointers to each overloaded function and pass them to .def()
-    void (ProcessingChain::*ptr_apply_to)(np::ndarray, bp::list) = &ProcessingChain::apply;
+    void (ProcessingChain::*ptr_apply_to)(np::ndarray, np::ndarray) = &ProcessingChain::apply;
 
     class_<ProcessingChain, bases<Process>>("ProcessingChain", init<>())
         .def("add_process", &ProcessingChain::add_process)
@@ -91,12 +91,21 @@ BOOST_PYTHON_MODULE(sigproengine) {
         .def_readonly("gain", &Gain::gain)
         ;
 
-    class_<ColorMap, bases<Process> >("ColorMap", init<>())
-        .def("setup", &ColorMap::setup)
-        .def("json_save", &ColorMap::json_save)
-        .def_readwrite("enabled", &ColorMap::enabled)
-        .def_readonly("filepath", &ColorMap::filepath)
-        ;
+
+    // class_<Node, bases<Process> >("Node", init<>())
+    //     // .def("apply", ptr_numpy_apply_to)
+    //     // .def("apply", ptr_numpy_apply)
+    //     .def("json_save", &Node::json_save)
+    //     .def_readwrite("enabled", &Node::enabled)
+    //     ;
+
+
+    // class_<ColorMap, bases<Process> >("ColorMap", init<>())
+    //     .def("setup", &ColorMap::setup)
+    //     .def("json_save", &ColorMap::json_save)
+    //     .def_readwrite("enabled", &ColorMap::enabled)
+    //     .def_readonly("filepath", &ColorMap::filepath)
+    //     ;
 
     def("func", func);
 }
