@@ -33,10 +33,10 @@ class ProcessingChain : public Process {
         void clear();
         bp::list run(np::ndarray inData);
         bp::list run(np::ndarray inData, np::ndarray outData);
-        SIGNAL apply(SIGNAL inData, int points_per_trace);
-        SIGNAL apply(SIGNAL inData, SIGNAL outData, int points_per_trace);
         bp::list run(SIGNAL inData, SIGNAL outData, int points_per_trace);
         bp::list run(SIGNAL inData, int points_per_trace);
+        SIGNAL apply(SIGNAL inData, int points_per_trace);
+        SIGNAL apply(SIGNAL inData, SIGNAL outData, int points_per_trace);
         bp::dict json_save();
         void json_load(bp::dict params);
 

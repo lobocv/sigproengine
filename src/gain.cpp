@@ -30,11 +30,8 @@ SIGNAL Gain::apply(SIGNAL inData, SIGNAL outData, int points_per_trace) {
         return outData;
     }
 
-    // SIGNAL_DTYPE* rawOut = outData.get();
-    // SIGNAL_DTYPE* rawIn = inData.get();
     for (int ii=0; ii < points_per_trace; ii++) {
         outData[ii] = g * inData[ii];
-        // rawOut[ii] = g * rawIn[ii];
     }
 
     return outData;

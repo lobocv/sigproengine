@@ -44,11 +44,15 @@ void Process::apply(np::ndarray inData) {
 
 
 
+SIGNAL Process::apply(SIGNAL inData,  int points_per_trace) {
+    // Overridden method that uses the same array for in and out data
+    return Process::apply(inData, inData, points_per_trace);
+}
+
+
 SIGNAL Process::apply(SIGNAL inData, SIGNAL outData, int points_per_trace) {
-    if ( points_per_trace > 0 ) {
-        this->apply(inData, outData, points_per_trace);
-    }    
-    return inData;
+    // Implementation of a Process will go here for derived classes
+    return outData;
 }
 
 
@@ -60,19 +64,6 @@ SHARED_SIGNAL Process::apply(SHARED_SIGNAL inData, SHARED_SIGNAL outData, int po
     this->apply(unshared_inData, unshared_outData, points_per_trace);
     return inData;
 }
-
-
-
-SIGNAL Process::apply(SIGNAL inData,  int points_per_trace) {
-    // Overridden method that uses the same array for in and out data
-    return Process::apply(inData, inData, points_per_trace);
-}
-
-
-// void Process::apply(SIGNAL inData, SIGNAL outData) {
-    // Implementation of a Process will go here for derived classes
-// }
-
 
 
 bp::dict Process::json_save() {

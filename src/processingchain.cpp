@@ -102,7 +102,8 @@ bp::list ProcessingChain::run(SIGNAL inData, SIGNAL outData, int points_per_trac
 }
 
 SIGNAL ProcessingChain::apply(SIGNAL inData, int points_per_trace) {
-    return inData;
+    // Dummy function, use run() instead.
+    return this->apply(inData, inData, points_per_trace);
 }
 
 
@@ -114,9 +115,6 @@ SIGNAL ProcessingChain::apply(SIGNAL inData, SIGNAL outData, int points_per_trac
     int nodeCount = 0;
 
     std::cout << "Calling Processing Chain Apply" << std::endl;
-
-    // np::ndarray outData = bp::extract<np::ndarray>(outDataList[0]);
-    // SIGNAL outData_raw = SIGNAL(reinterpret_cast<SIGNAL_DTYPE*>(outData.get_data()));    
 
 
     for (unsigned int ii=0; ii < this->processes.size(); ii++) {
