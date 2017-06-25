@@ -12,7 +12,8 @@ namespace bp = boost::python;
 class Gain : public Process {
 
     public:
-        const char* getName();
+        ~Gain() {};
+        const char* getName();    
         float gain = 1;
 
         void setup(float gain, bool enabled=true);
