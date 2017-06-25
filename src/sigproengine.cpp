@@ -68,15 +68,17 @@ BOOST_PYTHON_MODULE(sigproengine) {
 
 
     // To expose overloaded functions, we must create pointers to each overloaded function and pass them to .def()
-    void (ProcessingChain::*ptr_apply_to)(np::ndarray, np::ndarray) = &ProcessingChain::apply;
+    bp::list (ProcessingChain::*ptr_pc_apply_to)(np::ndarray, np::ndarray) = &ProcessingChain::run;
+    bp::list (ProcessingChain::*ptr_pc_apply)(np::ndarray) = &ProcessingChain::run;
 
     class_<ProcessingChain, bases<Process>>("ProcessingChain", init<>())
         .def("add_process", &ProcessingChain::add_process)
         .def("json_save", &ProcessingChain::json_save)
         .def("json_load", &ProcessingChain::json_load)
-        .def("apply", ptr_numpy_apply_to)
-        .def("apply", ptr_numpy_apply)
-        .def("apply", ptr_apply_to)
+        // .def("apply", ptr_numpy_apply_to)
+        // .def("apply", ptr_numpy_apply)
+        .def("apply", ptr_pc_apply)
+        .def("apply", ptr_pc_apply_to)
         .def("clear", &ProcessingChain::clear)
         ;
 

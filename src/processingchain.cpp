@@ -35,29 +35,74 @@ void ProcessingChain::clear() {
 }
 
 
-void ProcessingChain::apply(np::ndarray inData) {
+bp::list ProcessingChain::run(np::ndarray inData) {
     // bp::list outDataList;
     SIGNAL inData_raw = SIGNAL(reinterpret_cast<SIGNAL_DTYPE*>(inData.get_data()));
     // outDataList.append(inData);
     
-    this->apply(inData_raw, inData_raw, len(inData));
-    for (int i=0; i < len(inData); i++) {
-        // std::cout << bp::extract<char const*>(inData[i]) << std::endl;
-        // std::cout << inData_raw.get()[i]  << std::endl;
-        // std::cout << "TEST" << std::endl;
-    }
-    std::cout << "NUMPY DONE " << std::endl;
+    return this->run(inData_raw, len(inData));
 }
 
-void ProcessingChain::apply(np::ndarray inData, np::ndarray outData) {
+bp::list ProcessingChain::run(np::ndarray inData, np::ndarray outData) {
     SIGNAL inData_raw = SIGNAL(reinterpret_cast<SIGNAL_DTYPE*>(inData.get_data()));
     SIGNAL outData_raw = SIGNAL(reinterpret_cast<SIGNAL_DTYPE*>(outData.get_data()));
-    this->apply(inData_raw, outData_raw, len(inData));
+    return this->run(inData_raw, outData_raw, len(inData));
 }
 
 
+bp::list ProcessingChain::run(SIGNAL inData, int points_per_trace) {
+
+    // Create a copy of the data
+    // std::cout << "Allocating new array" << std::endl;
+    SIGNAL copyData = new SIGNAL_DTYPE[points_per_trace];
+    
+    return this->run(inData, copyData, points_per_trace);
+}
+
+
+np::ndarray signal_to_numpy(SIGNAL outData, int points_per_trace) {
+    np::dtype dt = np::dtype::get_builtin<SIGNAL_DTYPE>();
+    bp::tuple shape = bp::make_tuple(points_per_trace);
+    bp::tuple stride = bp::make_tuple(sizeof(SIGNAL_DTYPE));
+    bp::object own;
+
+    return np::from_data(outData, dt, shape, stride, own);
+}
+
+bp::list ProcessingChain::run(SIGNAL inData, SIGNAL outData, int points_per_trace) {
+    bp::list outList;
+    Process* p;
+
+    // std::cout << "Calling run" << std::endl;
+
+    np::ndarray outData_np = signal_to_numpy(outData, points_per_trace);
+
+    outList.append(outData_np);
+    for (unsigned int ii=0; ii < this->processes.size(); ii++) {
+        p = &(this->processes[ii].get());
+        if (p->enabled) {
+            if (p->isNode) {
+                ProcessingChain* subChain = static_cast<ProcessingChain*>(p);
+                bp::list subChain_outList = subChain->run(inData, points_per_trace);
+                if ( len(subChain_outList) == 1 ) {
+                    outList.append(subChain_outList[0]);
+                } else {
+                    outList.append(subChain_outList);
+                }
+                
+            }
+            else {
+                p->apply(inData, outData, points_per_trace);
+            }
+            inData = outData;           // Output becomes the input for the next process
+        }
+    }
+
+    return outList;
+}
+
 SIGNAL ProcessingChain::apply(SIGNAL inData, int points_per_trace) {
-    return this->apply(inData, inData, points_per_trace);
+    return inData;
 }
 
 
@@ -95,7 +140,7 @@ SIGNAL ProcessingChain::apply(SIGNAL inData, SIGNAL outData, int points_per_trac
                 nodeCount += 1;
                 subChain->apply(copyData, copyData, points_per_trace);
 
-                bp::PyObject
+                
                                 
                 for (int jj=0; jj < points_per_trace; jj++) {
                     std::cout << "AFTER Array " << jj << " " << copyData[jj] << std::endl;
