@@ -15,6 +15,20 @@ namespace np = boost::python::numpy;
 namespace bp = boost::python;
 
 
+SIGNAL numpy_to_signal(np::ndarray np_array){
+    return SIGNAL(reinterpret_cast<SIGNAL_DTYPE*>(np_array.get_data()));
+}
+
+np::ndarray signal_to_numpy(SIGNAL outData, int points_per_trace) {
+    np::dtype dt = np::dtype::get_builtin<SIGNAL_DTYPE>();
+    bp::tuple shape = bp::make_tuple(points_per_trace);
+    bp::tuple stride = bp::make_tuple(sizeof(SIGNAL_DTYPE));
+    bp::object own;
+
+    return np::from_data(outData, dt, shape, stride, own);
+}
+
+
 const char* ProcessingChain::getName() {
     return "ProcessingChain";
 }
@@ -37,15 +51,17 @@ void ProcessingChain::clear() {
 
 bp::list ProcessingChain::run(np::ndarray inData) {
     // bp::list outDataList;
-    SIGNAL inData_raw = SIGNAL(reinterpret_cast<SIGNAL_DTYPE*>(inData.get_data()));
+    SIGNAL inData_raw = numpy_to_signal(inData);
     // outDataList.append(inData);
     
     return this->run(inData_raw, len(inData));
 }
 
+
 bp::list ProcessingChain::run(np::ndarray inData, np::ndarray outData) {
-    SIGNAL inData_raw = SIGNAL(reinterpret_cast<SIGNAL_DTYPE*>(inData.get_data()));
-    SIGNAL outData_raw = SIGNAL(reinterpret_cast<SIGNAL_DTYPE*>(outData.get_data()));
+
+    SIGNAL inData_raw = numpy_to_signal(inData);
+    SIGNAL outData_raw = numpy_to_signal(outData);
     return this->run(inData_raw, outData_raw, len(inData));
 }
 
@@ -57,16 +73,6 @@ bp::list ProcessingChain::run(SIGNAL inData, int points_per_trace) {
     SIGNAL copyData = new SIGNAL_DTYPE[points_per_trace];
     
     return this->run(inData, copyData, points_per_trace);
-}
-
-
-np::ndarray signal_to_numpy(SIGNAL outData, int points_per_trace) {
-    np::dtype dt = np::dtype::get_builtin<SIGNAL_DTYPE>();
-    bp::tuple shape = bp::make_tuple(points_per_trace);
-    bp::tuple stride = bp::make_tuple(sizeof(SIGNAL_DTYPE));
-    bp::object own;
-
-    return np::from_data(outData, dt, shape, stride, own);
 }
 
 bp::list ProcessingChain::run(SIGNAL inData, SIGNAL outData, int points_per_trace) {
