@@ -3,9 +3,7 @@
 
 #include <boost/python.hpp>
 #include <boost/python/numpy.hpp>
-#include <boost/property_tree/ptree.hpp>
-#include <boost/property_tree/json_parser.hpp>
-#include <boost/foreach.hpp>
+#include <boost/python/refcount.hpp>
 
 #include "process.h"
 #include "processingchain.h"
@@ -44,7 +42,10 @@ void ProcessingChain::add_process(Process* p) {
 }
 
 void ProcessingChain::clear() {
+    #ifdef DEBUG
     std::cout << "Clearing processing chain" << std::endl;
+    #endif
+
     this->processes.clear();        // Is this a memory leak?
 }
 
@@ -69,7 +70,9 @@ bp::list ProcessingChain::run(np::ndarray inData, np::ndarray outData) {
 bp::list ProcessingChain::run(SIGNAL inData, int points_per_trace) {
 
     // Create a copy of the data
-    // std::cout << "Allocating new array" << std::endl;
+    #ifdef DEBUG
+    std::cout << "Allocating new array" << std::endl;
+    #endif
     SIGNAL copyData = new SIGNAL_DTYPE[points_per_trace];
     
     return this->run(inData, copyData, points_per_trace);
@@ -79,7 +82,9 @@ bp::list ProcessingChain::run(SIGNAL inData, SIGNAL outData, int points_per_trac
     bp::list outList;
     Process* p;
 
-    // std::cout << "Calling run" << std::endl;
+    #ifdef DEBUG
+    std::cout << "Running ProcessingChain" << std::endl;
+    #endif
 
     np::ndarray outData_np = signal_to_numpy(outData, points_per_trace);
 
@@ -117,38 +122,38 @@ SIGNAL ProcessingChain::apply(SIGNAL inData, SIGNAL outData, int points_per_trac
     Process* p;
     ProcessingChain* subChain;
     bp::list subchain_outDataList;
-    const char* process_name;
     int nodeCount = 0;
 
+    #ifdef DEBUG
     std::cout << "Calling Processing Chain Apply" << std::endl;
+    #endif
 
 
     for (unsigned int ii=0; ii < this->processes.size(); ii++) {
         p = &(this->processes[ii].get());
-        process_name = p->getName();
-        std::cout << "Attempting to call process : " << process_name << " isNode = " << p->isNode << std::endl;
+        #ifdef DEBUG
+        std::cout << "Attempting to call process : " << p->getName() << " isNode = " << p->isNode << std::endl;
+        #endif
 
         if (p->enabled) {
             if ( p->isNode ) {
 
                 // Create a copy of the data
+                #ifdef DEBUG
                 std::cout << "Copying Array" << std::endl;
+                #endif
                 SIGNAL copyData = new SIGNAL_DTYPE[points_per_trace];
                 
                 for (int jj=0; jj < points_per_trace; jj++) {
                     copyData[jj] = inData[jj];
-                    std::cout << "Array " << jj << " " << copyData[jj] << std::endl;
                 }
-                std::cout << "Done Copying Array" << std::endl;
                 subChain = static_cast<ProcessingChain*>(p);
                 nodeCount += 1;
                 subChain->apply(copyData, copyData, points_per_trace);
 
-                
-                                
-                for (int jj=0; jj < points_per_trace; jj++) {
-                    std::cout << "AFTER Array " << jj << " " << copyData[jj] << std::endl;
-                }
+                #ifdef DEBUG
+                std::cout << "Deleting copied array" << std::endl;
+                #endif
                 delete copyData;
 
             }
@@ -161,7 +166,9 @@ SIGNAL ProcessingChain::apply(SIGNAL inData, SIGNAL outData, int points_per_trac
 
     }
 
+    #ifdef DEBUG
     std::cout << "Done Calling Processing Chain Apply" << std::endl;
+    #endif
     return inData;
 }
 
@@ -170,7 +177,6 @@ bp::dict ProcessingChain::json_save() {
     bp::list prolist;
     std::vector<std::reference_wrapper<Process>> processes = this->processes;
 
-    std::cout << "Calling Processing Chain JSON Serialize" << std::endl;
 
     for (unsigned int ii=0; ii < processes.size(); ii++) {
         process = processes[ii].get().json_save();
@@ -178,7 +184,6 @@ bp::dict ProcessingChain::json_save() {
     }
     chain["processes"] = prolist;
 
-    std::cout << "Done Calling Processing Chain JSON Serialize" << std::endl;
     return chain;
 
 }
@@ -198,11 +203,17 @@ void ProcessingChain::json_load(bp::dict json) {
     for (int ii=0; ii < len(prolist); ii++) {
           proparams = bp::extract<bp::dict>(prolist[ii]);
           process_name = bp::extract<std::string>(proparams["name"]);
+          #ifdef DEBUG
           std::cout << "Creating process " << process_name << std::endl;
+          #endif
           p = this->process_map[process_name]();
+          #ifdef DEBUG
           std::cout << "Initializing process " << process_name << std::endl;
+          #endif
           p->json_load(proparams);
+          #ifdef DEBUG
           std::cout << "Adding process to chain" << std::endl;
+          #endif
           this->add_process(p);
     }
 }

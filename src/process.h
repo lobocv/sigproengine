@@ -1,3 +1,5 @@
+#define DEBUG
+
 #ifndef PROCESS_INCLUDED
 #define PROCESS_INCLUDED
 
