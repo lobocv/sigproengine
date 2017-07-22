@@ -1,7 +1,0 @@
-{
-    "files.associations": {
-        "valarray": "cpp",
-        "*.tcc": "cpp",
-        "slist": "cpp"
-    }
-}
