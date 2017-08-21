@@ -11,6 +11,12 @@
 namespace np = boost::python::numpy;
 namespace bp = boost::python;
 
+Process::~Process() {
+    #ifdef DEBUG
+    std::cout << "Destroying Process.\n";
+    #endif
+}
+
 const char* Process::getName() {
     return "Un-named Process";
 }

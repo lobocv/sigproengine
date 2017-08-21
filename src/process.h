@@ -21,7 +21,7 @@ class Process {
         bool enabled = true;              // Is the process enabled
         bool isNode = false;              // Is the Process a node in the ProcessingChain
 
-        virtual ~Process() = default;
+        virtual ~Process();
 
         void setup(bool enabled=true);
         virtual void joinChain(Process* p);
