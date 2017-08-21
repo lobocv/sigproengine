@@ -25,10 +25,10 @@ template<typename T> Process* createInstance() {
 class ProcessingChain : public Process {
 
     public:
-        ~ProcessingChain() = default;
-        std::vector<std::reference_wrapper<Process>> processes;
+        ~ProcessingChain() { this->clear();};
+        std::vector<boost::shared_ptr<Process>> processes;
         const char* getName();
-        void add_process(Process* p);
+        void add_process(boost::shared_ptr<Process> p);
         void joinChain(Process* p);
         void clear();
         bp::list run(np::ndarray inData);

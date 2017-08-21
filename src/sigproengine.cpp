@@ -63,7 +63,7 @@ BOOST_PYTHON_MODULE(sigproengine) {
     void (Process::*ptr_numpy_apply)(np::ndarray) = &Process::apply;
     
 
-    class_<Process>("Process", init<>())
+    class_<Process, boost::shared_ptr<Process> >("Process", init<>())
     ;
 
 
@@ -71,7 +71,7 @@ BOOST_PYTHON_MODULE(sigproengine) {
     bp::list (ProcessingChain::*ptr_pc_apply_to)(np::ndarray, np::ndarray) = &ProcessingChain::run;
     bp::list (ProcessingChain::*ptr_pc_apply)(np::ndarray) = &ProcessingChain::run;
 
-    class_<ProcessingChain, bases<Process>>("ProcessingChain", init<>())
+    class_<ProcessingChain, bases<Process>,  boost::shared_ptr<ProcessingChain>>("ProcessingChain", init<>())
         .def("add_process", &ProcessingChain::add_process)
         .def("json_save", &ProcessingChain::json_save)
         .def("json_load", &ProcessingChain::json_load)
@@ -84,7 +84,7 @@ BOOST_PYTHON_MODULE(sigproengine) {
 
 
 
-    class_<Gain, bases<Process> >("Gain", init<>())
+    class_<Gain, bases<Process>,  boost::shared_ptr<Gain>>("Gain", init<>())
         .def("setup", &Gain::setup)
         .def("apply", ptr_numpy_apply_to)
         .def("apply", ptr_numpy_apply)

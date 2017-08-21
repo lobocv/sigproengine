@@ -36,9 +36,9 @@ void ProcessingChain::joinChain(Process* p) {
     this->isNode = true;
 }
 
-void ProcessingChain::add_process(Process* p) {
+void ProcessingChain::add_process(boost::shared_ptr<Process> p) {
     p->joinChain(this);   
-    this->processes.push_back(std::ref(*p));
+    this->processes.push_back(p);
 }
 
 void ProcessingChain::clear() {
@@ -90,7 +90,7 @@ bp::list ProcessingChain::run(SIGNAL inData, SIGNAL outData, int points_per_trac
 
     outList.append(outData_np);
     for (unsigned int ii=0; ii < this->processes.size(); ii++) {
-        p = &(this->processes[ii].get());
+        p = this->processes[ii].get();
         if (p->enabled) {
             if (p->isNode) {
                 ProcessingChain* subChain = static_cast<ProcessingChain*>(p);
@@ -130,7 +130,7 @@ SIGNAL ProcessingChain::apply(SIGNAL inData, SIGNAL outData, int points_per_trac
 
 
     for (unsigned int ii=0; ii < this->processes.size(); ii++) {
-        p = &(this->processes[ii].get());
+        p = this->processes[ii].get();
         #ifdef DEBUG
         std::cout << "Attempting to call process : " << p->getName() << " isNode = " << p->isNode << std::endl;
         #endif
@@ -175,11 +175,9 @@ SIGNAL ProcessingChain::apply(SIGNAL inData, SIGNAL outData, int points_per_trac
 bp::dict ProcessingChain::json_save() {
     bp::dict chain, process;
     bp::list prolist;
-    std::vector<std::reference_wrapper<Process>> processes = this->processes;
 
-
-    for (unsigned int ii=0; ii < processes.size(); ii++) {
-        process = processes[ii].get().json_save();
+    for (unsigned int ii=0; ii < this->processes.size(); ii++) {
+        process = processes[ii].get()->json_save();
         prolist.append(process);
     }
     chain["processes"] = prolist;
@@ -214,6 +212,6 @@ void ProcessingChain::json_load(bp::dict json) {
           #ifdef DEBUG
           std::cout << "Adding process to chain" << std::endl;
           #endif
-          this->add_process(p);
+          this->add_process(boost::shared_ptr<Process>(p));
     }
 }

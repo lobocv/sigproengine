@@ -64,10 +64,12 @@ class SigProEngineTest(unittest.TestCase):
 
     def test_apply_process_in_place(self):
         pc = spe.ProcessingChain()
-        g = spe.Gain()
-        g.setup(GAIN, True)
-        pc.add_process(g)
-        pc.add_process(g)
+        g1 = spe.Gain()
+        g1.setup(GAIN, True)
+        pc.add_process(g1)
+        g2 = spe.Gain()
+        g2.setup(GAIN, True)
+        pc.add_process(g2)
         asd = pc.apply(self.inData, self.inData)
         self.assertEqual(self.inData.sum(), GAIN**2 * len(self.inData))
 
