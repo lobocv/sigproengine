@@ -25,7 +25,7 @@ template<typename T> Process* createInstance() {
 class ProcessingChain : public Process {
 
     public:
-        ~ProcessingChain() {};
+        ~ProcessingChain() = default;
         std::vector<std::reference_wrapper<Process>> processes;
         const char* getName();
         void add_process(Process* p);
