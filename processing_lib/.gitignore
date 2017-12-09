@@ -1,0 +1,7 @@
+html/
+latex/
+build/
+lib/
+pylib/
+.vscode/
+.idea/

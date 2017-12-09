@@ -1,0 +1,20 @@
+#!/bin/bash
+
+if [ "$1" == "run" ]; then	
+	(cd $SANDBOX_WS &&./getlibs.sh)
+	(cd $SANDBOX_WS && python $2)
+elif [ "$1" == "build" ]; then
+	if [ "$2" == "" ]; then
+		(cd $SANDBOX_WS/.. && ./build_libs.sh)	
+	else
+		(cd $SANDBOX_WS/../$2 && make -j all && cd $SANDBOX_WS && ./getlibs.sh)
+	fi
+
+elif [ "$1" == "clean" ]; then
+    (cd $SANDBOX_WS/../processing_lib && make clean)
+    (cd $SANDBOX_WS/../common_utils && make clean)
+    (cd $SANDBOX_WS/../../ && rm -rfv devel)
+	(cd $SANDBOX_WS && rm -rvf ./build/* ./lib/* ./pylib/*)
+fi
+
+

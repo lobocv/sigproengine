@@ -1,0 +1,5 @@
+ROS based framework for signal processing
+
+This repo should be cloned into a catkin_ws/src directory.
+
+Building will require the path to Sensoft header files set in environment variable SENSOFT_INCLUDE.

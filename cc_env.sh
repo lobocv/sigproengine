@@ -1,0 +1,7 @@
+export ARCH=arm
+export ARCHITECTURE=arm-linux-gnueabihf
+export CC=$ARCHITECTURE-gcc
+export CXX=$ARCHITECTURE-g++
+export GDB=$ARCHITECTURE-gdb
+export TARGET_PREFIX=$ARCHITECTURE
+export CROSS_COMPILE=$ARCHITECTURE-
